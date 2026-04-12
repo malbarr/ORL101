@@ -42,16 +42,6 @@ let authToken = localStorage.getItem('orl101_token');
 let currentUser = JSON.parse(localStorage.getItem('orl101_user') || 'null');
 
 // ── API helper ─────────────────────────────────────────────────────────
-async function apiFetch(path, options = {}) {
-  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-  if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
-  const res = await fetch(API + path, { ...options, headers });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: 'Request failed' }));
-    throw new Error(err.detail || 'Request failed');
-  }
-  return res.json();
-}
 
 // ── Auth ───────────────────────────────────────────────────────────────
 async function authenticate() {
