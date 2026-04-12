@@ -120,7 +120,7 @@ async function apiFetch(path, options = {}) {
 
   // Clinical cases
   if (path.includes('/api/cases') || path.includes('/api/clinical')) {
-    return ORL_DATA.cases || [];
+    return ORL_DATA.clinical_cases || [];
   }
 
   // Certificate
