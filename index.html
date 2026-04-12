@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ORL101 — ENT for Primary Care</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="/static/css/webapp.css?v=4">
+  <style>
+    /* Extra inline styles for safe-area etc. */
+    body { padding-top: env(safe-area-inset-top); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ HOME ══════════════════════════════════ -->
+<section id="home" class="section active">
+  <div class="home-hero">
+    <div class="home-hero-logo">🏥</div>
+    <h1>ORL 101</h1>
+    <p>ENT for Primary Care<br>دليل الرعاية الأولية في طب الأنف والأذن والحنجرة</p>
+    <p class="home-hero-name">Dr. Mohammad H. Al-Bar, MD · IAU / KFHU</p>
+  </div>
+
+  <div id="user-greeting" class="user-greeting"></div>
+
+  <!-- Pre-test banner (shown when pre-test not done) -->
+  <div id="pretest-banner" class="pretest-banner hidden" onclick="showPretestModal()">
+    <div class="pretest-banner-icon">📋</div>
+    <div>
+      <div class="pretest-banner-title">Take Your Pre-Test</div>
+      <div class="pretest-banner-desc">Assess your baseline knowledge before starting the course →</div>
+    </div>
+  </div>
+
+  <!-- Level progress bar (shown when role_set) -->
+  <div id="level-progress-wrap" class="hidden" style="padding: 0 16px 12px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+      <span style="font-size:13px; font-weight:700; color:var(--text);">Your Level</span>
+      <span id="current-level-badge" class="level-badge">Beginner</span>
+    </div>
+    <div style="display:flex; gap:6px;">
+      <div class="level-step" id="lvl-beginner" style="flex:1; height:6px; border-radius:3px; background:var(--border); transition:background 0.3s;"></div>
+      <div class="level-step" id="lvl-intermediate" style="flex:1; height:6px; border-radius:3px; background:var(--border); transition:background 0.3s;"></div>
+      <div class="level-step" id="lvl-advanced" style="flex:1; height:6px; border-radius:3px; background:var(--border); transition:background 0.3s;"></div>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-top:3px; font-size:10px; color:var(--text-hint);">
+      <span>Beginner</span><span>Intermediate</span><span>Advanced</span>
+    </div>
+  </div>
+
+  <div class="mode-grid">
+    <div class="mode-card" data-mode="exam">
+      <div class="mode-icon">📝</div>
+      <div class="mode-title">Exam Mode</div>
+      <div class="mode-desc">MCQ practice with instant feedback</div>
+    </div>
+    <div class="mode-card" data-mode="cards">
+      <div class="mode-icon">🃏</div>
+      <div class="mode-title">Cards Mode</div>
+      <div class="mode-desc">Red flags &amp; clinical pearls</div>
+    </div>
+    <div class="mode-card" data-mode="course">
+      <div class="mode-icon">🎓</div>
+      <div class="mode-title">Course Mode</div>
+      <div class="mode-desc">20 chapters + certificate</div>
+    </div>
+    <div class="mode-card" data-mode="cases">
+      <div class="mode-icon">🏥</div>
+      <div class="mode-title">Cases</div>
+      <div class="mode-desc">15 branching clinical cases</div>
+    </div>
+    <div class="mode-card" data-mode="trivia">
+      <div class="mode-icon">🎮</div>
+      <div class="mode-title">Trivia Game</div>
+      <div class="mode-desc">Rapid-fire ENT quiz</div>
+    </div>
+  </div>
+
+  <!-- In Action card -->
+  <div class="p-16" style="padding-top:4px; padding-bottom:8px;">
+    <div class="action-hero-card" onclick="Action.open()">
+      <div style="font-size:28px;">🏃</div>
+      <div>
+        <div style="font-size:16px; font-weight:800; color:white;">In Action</div>
+        <div style="font-size:12px; opacity:0.85;">Hospital Survival Guide — Templates, Meds, Consent, Emergencies</div>
+      </div>
+      <div style="font-size:18px; opacity:0.7;">›</div>
+    </div>
+  </div>
+
+  <!-- Ask the Book button -->
+  <div class="p-16" style="padding-top:0;">
+    <button class="btn ask-book-btn btn-full" onclick="Chat.open()">
+      <span style="font-size:20px;">💬</span>
+      <span>Ask the Book</span>
+      <span style="font-size:11px; opacity:0.75; margin-left:auto;">Search the textbook</span>
+    </button>
+  </div>
+
+  <!-- Feedback button -->
+  <div class="p-16" style="padding-top:0;">
+    <button class="btn btn-full" onclick="sendFeedback()" style="background:linear-gradient(135deg,#1a1a2e,#16213e); color:white; display:flex; align-items:center; gap:10px; justify-content:center; border:none; padding:14px; border-radius:var(--radius); font-size:14px; font-weight:700; cursor:pointer;">
+      <span style="font-size:20px;">💬</span>
+      <span>Contact Dr. Al-Bar</span>
+      <span style="font-size:11px; opacity:0.7; margin-left:auto;">via WhatsApp</span>
+    </button>
+  </div>
+
+  <div class="p-16">
+    <div class="card" style="padding: 16px; background: linear-gradient(135deg,#EBF8F8,#F0FFF4);">
+      <div style="font-size: 13px; font-weight: 700; color: var(--teal); margin-bottom: 8px;">📖 About ORL 101</div>
+      <p style="font-size: 13px; line-height: 1.6; color: var(--text);">
+        A bilingual (English/Arabic) practical clinical handbook for medical students and primary care physicians.
+        20 chapters covering Rhinology, Otology, Laryngology, Head &amp; Neck, and Paediatric ENT.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ EXAM ══════════════════════════════════ -->
+<section id="exam" class="section">
+  <div class="page-header">
+    <h1>📝 Exam Mode</h1>
+    <p>MCQ Practice with Instant Feedback</p>
+  </div>
+
+  <!-- Setup -->
+  <div id="exam-setup">
+    <div class="setup-card">
+      <div class="setup-title">Configure Your Quiz</div>
+
+      <div class="form-group">
+        <label class="form-label">Chapter</label>
+        <select id="exam-chapter-select" class="form-select">
+          <option value="">All Chapters (Random)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Number of Questions</label>
+        <div class="num-selector">
+          <button class="num-btn" onclick="
+            const el = document.getElementById('exam-num-questions');
+            if (parseInt(el.value) > 5) el.value = parseInt(el.value) - 5;
+          ">−</button>
+          <input type="number" id="exam-num-questions" value="10" min="5" max="50"
+            style="width:80px; text-align:center; font-size:22px; font-weight:800; background:none; border:none; color:var(--text); outline:none;">
+          <button class="num-btn" onclick="
+            const el = document.getElementById('exam-num-questions');
+            if (parseInt(el.value) < 50) el.value = parseInt(el.value) + 5;
+          ">+</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Mode</label>
+        <select id="exam-mode-select" class="form-select">
+          <option value="practice">Practice (untimed)</option>
+          <option value="timed">Timed Exam</option>
+          <option value="chapter">Chapter Quiz</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="display:flex; align-items:center; gap:10px;">
+        <input type="checkbox" id="exam-timed" style="width:18px; height:18px;">
+        <label for="exam-timed" style="font-size:14px; cursor:pointer;">Enable timer (1 min/question)</label>
+      </div>
+
+      <button class="btn btn-primary btn-full mt-12" onclick="Exam.start()">
+        🚀 Start Quiz
+      </button>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div id="exam-quiz" class="hidden">
+    <div class="quiz-container">
+      <div class="question-progress">
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="exam-progress-fill" style="width:0%"></div>
+        </div>
+        <span class="progress-label" id="exam-progress-label">1 / 10</span>
+        <div class="quiz-timer hidden" id="exam-timer">⏱ 10:00</div>
+      </div>
+
+      <div class="question-card">
+        <div class="question-topic" id="exam-topic">ENT</div>
+        <div class="question-text" id="exam-question-text">Loading question...</div>
+      </div>
+
+      <div class="options-list" id="exam-options"></div>
+
+      <div class="explanation-box hidden" id="exam-explanation"></div>
+
+      <button class="btn btn-primary btn-full mt-16 hidden" id="exam-next-btn" onclick="Exam.next()">
+        Next Question →
+      </button>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div id="exam-result" class="hidden">
+    <div class="score-card">
+      <div class="score-emoji" id="result-emoji">🏆</div>
+      <div class="score-value" id="result-score">0%</div>
+      <div class="score-label">Your Score</div>
+      <div class="score-details" id="result-details"></div>
+      <div id="result-status" class="mt-8"></div>
+    </div>
+    <div class="p-16" style="display:flex; gap:10px; flex-direction:column;">
+      <button class="btn btn-primary btn-full" onclick="Exam.start()">🔄 Retry Quiz</button>
+      <button class="btn btn-secondary btn-full" onclick="Exam.showSetup()">⚙️ New Quiz</button>
+      <button class="btn btn-secondary btn-full" onclick="showSection('home')">🏠 Home</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ CARDS ═════════════════════════════════ -->
+<section id="cards" class="section">
+  <div class="page-header">
+    <h1>🃏 Cards Mode</h1>
+    <p>Red Flags · Clinical Pearls · Spaced Repetition</p>
+  </div>
+
+  <!-- Filter chips -->
+  <div class="fc-filter-row">
+    <button class="filter-chip active" data-filter="all">All Cards</button>
+    <button class="filter-chip" data-filter="red_flag">🚩 Red Flags</button>
+    <button class="filter-chip" data-filter="clinical_pearl">💡 Pearls</button>
+    <button class="filter-chip" data-filter="action">⚡ Action</button>
+    <button class="filter-chip" data-filter="anatomy">🔬 Anatomy</button>
+    <button class="filter-chip" data-filter="treatment">💊 Treatment</button>
+    <button class="filter-chip" data-filter="diagnosis">📋 Diagnosis</button>
+    <button class="filter-chip" data-filter="emergency">🚨 Emergency</button>
+  </div>
+
+  <!-- Loading -->
+  <div id="cards-loading" class="loading-spinner">
+    <div class="spinner"></div>
+    <span>Loading cards...</span>
+  </div>
+
+  <!-- Empty -->
+  <div id="cards-empty" class="empty-state hidden">
+    <div class="empty-state-icon">🃏</div>
+    <p>No cards in this category.<br>Try a different filter.</p>
+  </div>
+
+  <!-- Deck -->
+  <div id="cards-deck" class="hidden">
+    <div class="card-counter" id="card-counter">1 / 50</div>
+
+    <div class="card-deck">
+      <div class="flashcard-wrapper" id="flashcard-wrapper">
+        <div class="flashcard" id="flashcard">
+          <!-- Front -->
+          <div class="fc-front">
+            <div id="fc-front-category"></div>
+            <div class="fc-front-text" id="fc-front-text">Tap to flip</div>
+            <div class="fc-hint">Tap to reveal → Swipe to navigate</div>
+          </div>
+          <!-- Back -->
+          <div class="fc-back">
+            <div class="fc-back-label">💊 Clinical Action / Key Fact</div>
+            <div class="fc-back-text" id="fc-back-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div style="display:flex; gap:10px; padding: 0 16px 8px; justify-content:center;">
+      <button class="btn btn-secondary btn-sm" onclick="Cards.prev()">← Prev</button>
+      <button class="btn btn-secondary btn-sm" onclick="Cards.flip()">Flip</button>
+      <button class="btn btn-secondary btn-sm" onclick="Cards.next()">Next →</button>
+    </div>
+
+    <!-- Rating row (shown after flip) -->
+    <div class="rating-row p-16 hidden" id="cards-rating-row">
+      <button class="rating-btn rating-again" onclick="Cards.rate(1)">😰 Again</button>
+      <button class="rating-btn rating-hard" onclick="Cards.rate(2)">😓 Hard</button>
+      <button class="rating-btn rating-good" onclick="Cards.rate(3)">😊 Good</button>
+      <button class="rating-btn rating-easy" onclick="Cards.rate(4)">😎 Easy</button>
+    </div>
+
+    <div style="padding: 0 16px 16px; font-size: 12px; color: var(--text-hint); text-align: center;">
+      Rate each card to enable spaced repetition learning
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ COURSE ════════════════════════════════ -->
+<section id="course" class="section">
+
+  <!-- List view -->
+  <div id="course-list-view">
+    <div class="progress-overview">
+      <h2>🎓 Course Mode</h2>
+      <p>Learn all 20 ENT chapters systematically</p>
+      <div class="progress-ring-wrap">
+        <div class="progress-circle">
+          <svg width="72" height="72" viewBox="0 0 72 72">
+            <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="6"/>
+            <circle id="progress-ring-fill" cx="36" cy="36" r="30" fill="none"
+              stroke="white" stroke-width="6"
+              stroke-dasharray="188.5" stroke-dashoffset="188.5"
+              stroke-linecap="round" style="transition: stroke-dashoffset 0.8s ease;"/>
+          </svg>
+          <div class="progress-circle-text" id="progress-pct-text">0%</div>
+        </div>
+        <div class="progress-stats">
+          <div id="progress-stats-text"><strong>0</strong> / 0 chapters completed</div>
+          <div style="font-size:12px; opacity:0.8; margin-top:4px;">Complete 80% to earn certificate</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="cert-btn-wrap" class="hidden p-16">
+      <button class="btn btn-gold btn-full" onclick="Course.generateCertificate()">
+        🎓 Download Certificate
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div id="course-loading" class="loading-spinner">
+      <div class="spinner"></div>
+      <span>Loading chapters...</span>
+    </div>
+
+    <!-- Chapter list -->
+    <div id="course-list">
+      <div id="course-chapter-list" class="card-list"></div>
+    </div>
+  </div>
+
+  <!-- Sub-topic list view (table of contents for a chapter) -->
+  <div id="course-chapter-view" class="hidden">
+    <div class="page-header" style="display:flex; align-items:center; gap:10px;">
+      <button onclick="Course.backToList()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer; padding:0;">←</button>
+      <div style="flex:1; min-width:0;">
+        <h1 id="course-chapter-title" style="font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Chapter</h1>
+        <p id="course-chapter-subtitle" style="font-size:12px; opacity:0.8; margin-top:2px;"></p>
+      </div>
+    </div>
+
+    <!-- Key points summary box -->
+    <div id="chapter-key-points" class="hidden" style="margin: 0 16px 12px; padding: 14px 16px; background: linear-gradient(135deg,#EBF8F8,#F0FFF4); border-radius: 12px; border-left: 4px solid var(--teal);">
+      <div style="font-size: 12px; font-weight: 700; color: var(--teal); margin-bottom: 8px;">🔑 Key Points</div>
+      <div id="chapter-key-points-content" style="font-size: 13px; line-height: 1.7; color: var(--text);"></div>
+    </div>
+
+    <!-- Sub-topic list loading -->
+    <div id="subtopics-loading" class="loading-spinner">
+      <div class="spinner"></div>
+      <span>Loading topics...</span>
+    </div>
+
+    <!-- Sub-topic list -->
+    <div id="subtopics-list" class="card-list hidden"></div>
+
+    <div class="p-16" style="display:flex; gap:10px; flex-direction:column;">
+      <button class="btn btn-primary btn-full" onclick="Course.startChapterQuiz()">
+        📝 Take Chapter Quiz
+      </button>
+    </div>
+  </div>
+
+  <!-- Sub-topic content view -->
+  <div id="course-subtopic-view" class="hidden">
+    <div class="page-header" style="display:flex; align-items:center; gap:10px;">
+      <button onclick="Course.backToChapter()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer; padding:0;">←</button>
+      <div style="flex:1; min-width:0;">
+        <h1 id="subtopic-title" style="font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></h1>
+        <p id="subtopic-chapter-label" style="font-size:11px; opacity:0.75; margin-top:1px;"></p>
+      </div>
+    </div>
+
+    <!-- Progress dots -->
+    <div id="subtopic-progress-dots" style="display:flex; gap:5px; padding: 8px 16px; justify-content:center; flex-wrap:wrap;"></div>
+
+    <!-- Content -->
+    <div class="chapter-reader">
+      <div id="subtopic-content" class="chapter-content-box">Loading...</div>
+    </div>
+
+    <!-- Prev / Next navigation -->
+    <div style="display:flex; gap:10px; padding: 12px 16px 8px; justify-content:space-between;">
+      <button class="btn btn-secondary" id="subtopic-prev-btn" onclick="Course.prevSubTopic()" style="flex:1;">← Prev</button>
+      <button class="btn btn-secondary" id="subtopic-next-btn" onclick="Course.nextSubTopic()" style="flex:1;">Next →</button>
+    </div>
+    <div style="padding: 0 16px 80px;">
+      <button class="btn btn-secondary btn-full" onclick="Course.backToChapter()">📑 Back to Topics</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ IN ACTION ════════════════════════════════ -->
+<section id="action" class="section">
+  <!-- Categories view -->
+  <div id="action-categories-view">
+    <div class="page-header" style="background:linear-gradient(135deg, #1a1a2e, #16213e);">
+      <h1>🏃 In Action</h1>
+      <p>Hospital Survival Guide</p>
+    </div>
+    <div id="action-categories-grid" class="action-grid p-16"></div>
+  </div>
+
+  <!-- Guides list view -->
+  <div id="action-guides-view" class="hidden">
+    <div class="page-header">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button onclick="Action.backToCategories()" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">←</button>
+        <div>
+          <h1 id="action-category-title"></h1>
+        </div>
+      </div>
+    </div>
+    <div id="action-guides-list" class="card-list"></div>
+  </div>
+
+  <!-- Guide detail view -->
+  <div id="action-guide-view" class="hidden">
+    <div class="page-header" style="background:linear-gradient(135deg, #1a1a2e, #16213e);">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button onclick="Action.backToGuides()" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">←</button>
+        <div>
+          <h1 id="action-guide-title"></h1>
+        </div>
+      </div>
+    </div>
+    <div class="p-16">
+      <div id="action-guide-content" class="chapter-content-box"></div>
+      <div id="action-template-wrap" class="hidden" style="margin-top:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-weight:700; font-size:14px;">📋 Copyable Template</span>
+          <button class="btn btn-sm btn-primary" onclick="Action.copyTemplate()">📋 Copy</button>
+        </div>
+        <pre id="action-template-text" style="background:var(--bg-secondary); padding:16px; border-radius:var(--radius-sm); border:1px solid var(--border); font-size:13px; line-height:1.6; white-space:pre-wrap; overflow-x:auto;"></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ TRIVIA ════════════════════════════════ -->
+<section id="trivia" class="section">
+
+  <!-- Setup screen -->
+  <div id="trivia-setup">
+    <div class="trivia-hero">
+      <div style="font-size:56px; line-height:1;">🎮</div>
+      <h1 style="font-size:26px; font-weight:900; margin:8px 0 4px;">ENT Trivia</h1>
+      <p style="opacity:0.85; font-size:14px;">Rapid-fire questions · Lives · Streaks · Glory</p>
+    </div>
+
+    <!-- Lives + streak preview -->
+    <div class="trivia-info-row">
+      <div class="trivia-info-card">
+        <div style="font-size:28px;">❤️❤️❤️</div>
+        <div style="font-size:12px; font-weight:700; margin-top:4px;">3 Lives</div>
+      </div>
+      <div class="trivia-info-card">
+        <div style="font-size:28px;">🔥</div>
+        <div style="font-size:12px; font-weight:700; margin-top:4px;">Streak Bonus</div>
+      </div>
+      <div class="trivia-info-card">
+        <div style="font-size:28px;">🏆</div>
+        <div style="font-size:12px; font-weight:700; margin-top:4px;">Leaderboard</div>
+      </div>
+    </div>
+
+    <!-- Scoring rules -->
+    <div style="margin: 0 16px 16px; padding: 14px 16px; background: var(--bg-secondary); border-radius: var(--radius); font-size: 13px; line-height: 1.9;">
+      <div>✅ <strong>+10</strong> per correct answer</div>
+      <div>🔥 <strong>+5 bonus</strong> for streak ≥ 3</div>
+      <div>⚡ <strong>+15 bonus</strong> for streak ≥ 5</div>
+      <div>❌ Wrong answer = lose 1 life</div>
+      <div>💀 Game over at 0 lives</div>
+    </div>
+
+    <!-- Category picker -->
+    <div style="padding: 0 16px 12px;">
+      <label style="font-size:13px; font-weight:700; color:var(--text-hint); display:block; margin-bottom:8px;">CATEGORY</label>
+      <select id="trivia-chapter-select" class="form-select">
+        <option value="">🎲 Random Mix (All Chapters)</option>
+      </select>
+    </div>
+
+    <div style="padding: 0 16px 16px; display:flex; gap:10px; flex-direction:column;">
+      <button class="btn btn-primary btn-full" style="font-size:18px; padding:16px; font-weight:800;" onclick="Trivia.start()">
+        🚀 Start Game!
+      </button>
+      <button class="btn btn-secondary btn-full" onclick="Trivia.showLeaderboard()">
+        🏆 Leaderboard
+      </button>
+    </div>
+  </div>
+
+  <!-- Game screen -->
+  <div id="trivia-game" class="hidden">
+    <!-- HUD -->
+    <div class="trivia-hud">
+      <div class="trivia-lives" id="trivia-lives-display">❤️❤️❤️</div>
+      <div class="trivia-score-display">
+        <div class="trivia-score-num" id="trivia-score">0</div>
+        <div style="font-size:10px; opacity:0.75;">SCORE</div>
+      </div>
+      <div class="trivia-streak-display">
+        <div id="trivia-streak-icon">🔥</div>
+        <div id="trivia-streak-count" style="font-size:20px; font-weight:800;">0</div>
+        <div style="font-size:10px; opacity:0.75;">STREAK</div>
+      </div>
+    </div>
+
+    <!-- Question card -->
+    <div class="trivia-q-wrap">
+      <div class="trivia-q-num" id="trivia-q-num">Q1</div>
+      <div class="trivia-question" id="trivia-question">Loading...</div>
+    </div>
+
+    <!-- Feedback flash overlay -->
+    <div id="trivia-feedback" class="trivia-feedback hidden"></div>
+
+    <!-- Options -->
+    <div class="trivia-options" id="trivia-options"></div>
+  </div>
+
+  <!-- Game over screen -->
+  <div id="trivia-gameover" class="hidden">
+    <div class="trivia-hero" style="padding-top:24px;">
+      <div id="trivia-over-emoji" style="font-size:64px; line-height:1;">💀</div>
+      <h1 style="font-size:28px; font-weight:900; margin:10px 0 4px;">Game Over!</h1>
+      <div id="trivia-final-score" style="font-size:48px; font-weight:900; color:var(--gold);">0</div>
+      <p style="opacity:0.85;">Final Score</p>
+    </div>
+    <div style="margin: 0 16px 16px; padding:14px 16px; background:var(--bg-secondary); border-radius:var(--radius); font-size:14px; line-height:2;">
+      <div>❓ Questions answered: <strong id="trivia-stat-q">0</strong></div>
+      <div>✅ Correct: <strong id="trivia-stat-correct">0</strong></div>
+      <div>🔥 Best streak: <strong id="trivia-stat-streak">0</strong></div>
+    </div>
+    <div style="padding: 0 16px 16px; display:flex; gap:10px; flex-direction:column;">
+      <button class="btn btn-primary btn-full" style="font-size:16px;" onclick="Trivia.start()">🔄 Play Again</button>
+      <button class="btn btn-secondary btn-full" onclick="Trivia.shareScore()">📤 Share Score</button>
+      <button class="btn btn-secondary btn-full" onclick="Trivia.showLeaderboard()">🏆 Leaderboard</button>
+      <button class="btn btn-secondary btn-full" onclick="Trivia.backToSetup()">← Back</button>
+    </div>
+  </div>
+
+  <!-- Leaderboard screen -->
+  <div id="trivia-leaderboard" class="hidden">
+    <div class="page-header">
+      <h1>🏆 Leaderboard</h1>
+      <p>Top scores — updated in real time</p>
+    </div>
+    <div id="trivia-lb-list" style="padding: 12px 16px 100px;"></div>
+    <div style="padding: 0 16px; position:sticky; bottom:70px;">
+      <button class="btn btn-secondary btn-full" onclick="Trivia.backToSetup()">← Back to Game</button>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════ CASES ════════════════════════════════ -->
+<section id="cases" class="section">
+
+  <!-- List view -->
+  <div id="cases-home">
+    <div class="page-header cases-header">
+      <h1>🏥 Clinical Simulation</h1>
+      <p>Interactive Branching Cases · CCS Style</p>
+    </div>
+
+    <!-- Stats row -->
+    <div id="cases-stats-row" class="cases-stats-row hidden">
+      <div class="cases-stat-card">
+        <div class="cases-stat-value" id="cases-stat-passed">0</div>
+        <div class="cases-stat-label">Passed</div>
+      </div>
+      <div class="cases-stat-card">
+        <div class="cases-stat-value" id="cases-stat-avg">—</div>
+        <div class="cases-stat-label">Avg Score</div>
+      </div>
+      <div class="cases-stat-card">
+        <div class="cases-stat-value" id="cases-stat-total">15</div>
+        <div class="cases-stat-label">Total Cases</div>
+      </div>
+    </div>
+
+    <!-- Cases intro -->
+    <div style="padding: 0 16px 16px;">
+      <div style="background:linear-gradient(135deg, #1a1a2e, #16213e); color:white; border-radius:var(--radius); padding:16px;">
+        <div style="font-size:15px; font-weight:700;">🏥 Clinical Simulation</div>
+        <div style="font-size:13px; opacity:0.8; margin-top:4px;">Work through real clinical scenarios. Make decisions, face consequences.</div>
+      </div>
+    </div>
+
+    <!-- Case list loading -->
+    <div id="cases-list-loading" class="loading-spinner">
+      <div class="spinner"></div>
+      <span>Loading cases...</span>
+    </div>
+
+    <!-- Case list -->
+    <div id="cases-list" class="hidden" style="padding: 0 16px 100px;"></div>
+  </div>
+
+  <!-- Case Play View -->
+  <div id="cases-play-view" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+
+    <!-- Sticky header -->
+    <div class="cases-play-header">
+      <button onclick="Cases.backToList()" class="cases-back-btn">←</button>
+      <div style="flex:1; min-width:0;">
+        <div id="cases-play-label" style="font-size:11px; opacity:0.75;"></div>
+        <div id="cases-play-title" style="font-size:14px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+      </div>
+      <div id="cases-play-timer" class="cases-timer hidden">10:00</div>
+    </div>
+
+    <!-- Sticky patient info bar -->
+    <div id="cases-patient-bar" class="cases-patient-bar">
+      <span id="cases-patient-info"></span>
+    </div>
+
+    <!-- Stage progress dots -->
+    <div id="cases-progress-dots" class="cases-progress-dots"></div>
+
+    <!-- Scrollable content -->
+    <div id="cases-scroll" style="overflow-y:auto; flex:1; padding-bottom:120px;">
+
+      <!-- Red flag banner -->
+      <div id="cases-red-flag" class="cases-red-flag hidden">
+        <span id="cases-red-flag-text"></span>
+      </div>
+
+      <!-- Clinical narrative card -->
+      <div class="cases-narrative-card" id="cases-narrative-card">
+        <div class="cases-narrative-label">📋 Clinical Scenario</div>
+        <div id="cases-narrative-text" style="font-size:14px; line-height:1.75;"></div>
+      </div>
+
+      <!-- Options -->
+      <div id="cases-options" class="cases-options-list"></div>
+
+      <!-- Pass screen -->
+      <div id="cases-pass-screen" class="hidden cases-pass-screen">
+        <div class="cases-pass-emoji">🎉</div>
+        <div class="cases-pass-title">Case Complete!</div>
+        <div id="cases-pass-score" class="cases-pass-score"></div>
+        <div id="cases-pass-summary" class="cases-pass-summary"></div>
+        <div id="cases-pass-learning" class="cases-learning-box"></div>
+        <div style="display:flex; gap:10px; flex-direction:column; padding:0 0 16px;">
+          <button class="btn btn-primary btn-full" onclick="Cases.retryCase()">🔄 Try Again</button>
+          <button class="btn btn-secondary btn-full" onclick="Cases.backToList()">📋 All Cases</button>
+        </div>
+      </div>
+
+      <!-- Fail screen -->
+      <div id="cases-fail-screen" class="hidden cases-fail-screen">
+        <div class="cases-fail-emoji">❌</div>
+        <div class="cases-fail-title">Incorrect Path</div>
+        <div id="cases-fail-narrative" class="cases-fail-narrative"></div>
+        <div id="cases-fail-learning" class="cases-learning-box"></div>
+        <div style="display:flex; gap:10px; flex-direction:column; padding:0 0 16px;">
+          <button class="btn btn-primary btn-full" onclick="Cases.retryCase()">🔄 Try Again</button>
+          <button class="btn btn-secondary btn-full" onclick="Cases.backToList()">📋 All Cases</button>
+        </div>
+      </div>
+
+    </div><!-- end scrollable -->
+  </div><!-- end play-view -->
+
+</section>
+
+<!-- ═══════════════════════════ BOTTOM NAV ════════════════════════════ -->
+<nav class="bottom-nav">
+  <button class="nav-item active" data-section="home">
+    <span class="nav-icon">🏠</span>
+    <span class="nav-label">Home</span>
+  </button>
+  <button class="nav-item" data-section="exam">
+    <span class="nav-icon">📝</span>
+    <span class="nav-label">Exam</span>
+  </button>
+  <button class="nav-item" data-section="cards">
+    <span class="nav-icon">🃏</span>
+    <span class="nav-label">Cards</span>
+  </button>
+  <button class="nav-item" data-section="course">
+    <span class="nav-icon">📚</span>
+    <span class="nav-label">Course</span>
+  </button>
+  <button class="nav-item" data-section="cases">
+    <span class="nav-icon">🏥</span>
+    <span class="nav-label">Cases</span>
+  </button>
+  <button class="nav-item" data-section="trivia">
+    <span class="nav-icon">🎮</span>
+    <span class="nav-label">Trivia</span>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════ MODALS ════════════════════════════════ -->
+
+<!-- ═══════════════════════════ AI CHAT MODAL ══════════════════════ -->
+<div id="chat-modal" class="modal-overlay hidden">
+  <div class="chat-sheet">
+    <div class="chat-header">
+      <button onclick="Chat.close()" class="chat-close-btn">✕</button>
+      <div style="flex:1; text-align:center;">
+        <div style="font-size:16px; font-weight:800;">💬 Ask the Book</div>
+        <div style="font-size:11px; opacity:0.8;">AI answers from your textbook only</div>
+      </div>
+      <div style="width:32px;"></div>
+    </div>
+
+    <!-- Token warning -->
+    <div style="background:#FFF8E1; border-bottom:1px solid #FFE082; padding:8px 16px; font-size:11px; color:#795548; display:flex; align-items:center; gap:6px;">
+      <span>⚡</span>
+      <span>Search results from ORL101 textbook</span>
+    </div>
+
+    <!-- Messages -->
+    <div id="chat-messages" class="chat-messages">
+      <div class="chat-msg chat-msg-ai">
+        <div class="chat-bubble">👋 Hello! Ask me anything about ENT — I'll answer only from your ORL101 textbook.</div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-wrap">
+      <textarea id="chat-input" class="chat-input" placeholder="Type your question..." rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();Chat.send();}"></textarea>
+      <button class="btn btn-primary chat-send-btn" onclick="Chat.send()" id="chat-send-btn">↑</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ ROLE SELECTION MODAL ═════════════════ -->
+<div id="role-modal" class="modal-overlay hidden">
+  <div class="modal-sheet" style="max-height:90vh; overflow-y:auto;">
+    <div class="modal-handle"></div>
+    <div style="text-align:center; margin-bottom:20px;">
+      <div style="font-size:48px;">🏥</div>
+      <h2 style="font-size:20px; font-weight:800; margin:8px 0 4px;">Welcome to ORL 101</h2>
+      <p style="font-size:14px; color:var(--text-hint);">Please select your role to personalise your learning experience</p>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <button class="role-option" data-role="doctor" onclick="Roles.select('doctor')">
+        <span class="role-icon">👨‍⚕️</span>
+        <div>
+          <div class="role-name">Doctor / Resident</div>
+          <div class="role-desc">Full access — all chapters unlocked</div>
+        </div>
+      </button>
+      <button class="role-option" data-role="student" onclick="Roles.select('student')">
+        <span class="role-icon">🎓</span>
+        <div>
+          <div class="role-name">Medical Student</div>
+          <div class="role-desc">Level-based access — beginner → advanced</div>
+        </div>
+      </button>
+      <button class="role-option" data-role="intern" onclick="Roles.select('intern')">
+        <span class="role-icon">🩺</span>
+        <div>
+          <div class="role-name">Intern</div>
+          <div class="role-desc">Level-based access — all levels included</div>
+        </div>
+      </button>
+      <button class="role-option" data-role="guest" onclick="Roles.select('guest')">
+        <span class="role-icon">👁️</span>
+        <div>
+          <div class="role-name">Guest (Preview)</div>
+          <div class="role-desc">View first 3 chapters only</div>
+        </div>
+      </button>
+    </div>
+    <p style="font-size:11px; color:var(--text-hint); text-align:center; margin-top:16px;">
+      You can contact the admin to change your role later.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ PRE-TEST MODAL ═══════════════════════ -->
+<div id="pretest-modal" class="modal-overlay hidden">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="text-align:center;">
+      <div style="font-size:48px;">📋</div>
+      <h2 style="font-size:18px; font-weight:800; margin:8px 0 4px;">Pre-Test</h2>
+      <p style="font-size:14px; color:var(--text-hint); line-height:1.6;">
+        Before you start, take a short <strong>25-question test</strong> to assess your baseline ENT knowledge.<br>
+        After completing the course, you'll take a post-test to measure your improvement.
+      </p>
+    </div>
+    <div style="background:var(--bg-secondary); border-radius:12px; padding:16px; margin:16px 0; font-size:13px; line-height:1.8;">
+      <div>⏱️ ~15 minutes</div>
+      <div>❓ 25 MCQs covering all chapters</div>
+      <div>📊 Results saved to compare with post-test</div>
+      <div>🏆 Pre-test score shown on your certificate</div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-secondary" style="flex:1;" onclick="closeModal('pretest-modal')">Skip for now</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="Tests.startPreTest()">Start Pre-Test →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TEST MODAL ═══════════════════════════ -->
+<div id="test-modal" class="modal-overlay hidden">
+  <div class="modal-sheet" style="max-height:90vh; overflow-y:auto;">
+    <div class="modal-handle"></div>
+    <!-- Test in progress -->
+    <div id="test-quiz-wrap">
+      <div class="quiz-container" style="padding:0;">
+        <div class="question-progress">
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="test-progress-fill" style="width:0%"></div>
+          </div>
+          <span class="progress-label" id="test-progress-label">1 / 25</span>
+        </div>
+        <div class="question-card">
+          <div class="question-topic" id="test-topic"></div>
+          <div class="question-text" id="test-question-text">Loading...</div>
+        </div>
+        <div class="options-list" id="test-options"></div>
+        <div class="explanation-box hidden" id="test-explanation"></div>
+        <button class="btn btn-primary btn-full mt-16 hidden" id="test-next-btn" onclick="Tests.nextQuestion()">
+          Next Question →
+        </button>
+      </div>
+    </div>
+    <!-- Test result -->
+    <div id="test-result-wrap" class="hidden">
+      <div style="text-align:center; padding:20px 0;">
+        <div style="font-size:48px;" id="test-result-emoji">🎉</div>
+        <div style="font-size:36px; font-weight:900; color:var(--teal);" id="test-result-score">0%</div>
+        <div style="font-size:14px; color:var(--text-hint); margin-top:4px;" id="test-result-label">Pre-Test Score</div>
+        <div id="test-result-comparison" class="hidden" style="margin-top:16px; background:var(--bg-secondary); border-radius:12px; padding:16px;">
+          <div style="font-size:13px; font-weight:700; margin-bottom:8px;">📈 Your Progress</div>
+          <div style="display:flex; justify-content:space-around;">
+            <div style="text-align:center;">
+              <div style="font-size:22px; font-weight:800; color:var(--orange);" id="cmp-pre">-</div>
+              <div style="font-size:11px; color:var(--text-hint);">Pre-Test</div>
+            </div>
+            <div style="font-size:24px; color:var(--text-hint);">→</div>
+            <div style="text-align:center;">
+              <div style="font-size:22px; font-weight:800; color:var(--teal);" id="cmp-post">-</div>
+              <div style="font-size:11px; color:var(--text-hint);">Post-Test</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:22px; font-weight:800; color:#27AE60;" id="cmp-diff">-</div>
+              <div style="font-size:11px; color:var(--text-hint);">Improvement</div>
+            </div>
+          </div>
+          <p style="font-size:12px; margin-top:12px; color:var(--text-hint);" id="cmp-message"></p>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="closeModal('test-modal')">Done ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- Level info styles (inline) -->
+<style>
+.role-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+  width: 100%;
+}
+.role-option:hover, .role-option.selected {
+  border-color: var(--teal);
+  background: rgba(0,188,175,0.08);
+}
+.role-icon { font-size: 28px; flex-shrink:0; }
+.role-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.role-desc { font-size: 12px; color: var(--text-hint); margin-top: 2px; }
+
+.level-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--teal);
+  color: white;
+}
+.level-badge.intermediate { background: #F39C12; }
+.level-badge.advanced { background: #8E44AD; }
+.level-badge.completed { background: #27AE60; }
+
+.pretest-banner {
+  background: linear-gradient(135deg, #EBF8FF, #E0FFF4);
+  border: 1.5px solid var(--teal);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 0 16px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+.pretest-banner-icon { font-size: 28px; flex-shrink: 0; }
+.pretest-banner-title { font-size: 14px; font-weight: 700; color: var(--teal); }
+.pretest-banner-desc { font-size: 12px; color: var(--text-hint); margin-top: 2px; }
+</style>
+
+<script src="/static/js/webapp.js?v=5"></script>
+</body>
+</html>
