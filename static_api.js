@@ -119,7 +119,23 @@ async function apiFetch(path, options = {}) {
   if (path.includes('/api/trivia/score')) return { success: true };
   if (path.includes('/api/trivia/leaderboard')) return [];
 
-  // Clinical cases
+  // Cases history (stub)
+  if (path.includes('/api/cases/history')) {
+    return { stats: { cases_passed: 0, avg_percent: 0 }, attempts: [] };
+  }
+
+  // Cases attempt (stub)
+  if (path.includes('/api/cases/attempt')) {
+    return { success: true };
+  }
+
+  // Single case by ID
+  if (path.match(//api/cases/\d+/)) {
+    const id = parseInt(path.split('/').pop());
+    return (ORL_DATA.clinical_cases || []).find(c => c.id === id) || null;
+  }
+
+  // Clinical cases list
   if (path.includes('/api/cases') || path.includes('/api/clinical')) {
     return ORL_DATA.clinical_cases || [];
   }
