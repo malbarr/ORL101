@@ -75,6 +75,7 @@ async function apiFetch(path, options = {}) {
     };
     return {
       session_id: _quizSession.session_id,
+      questions: questions,
       question: questions[0],
       total: questions.length,
       current: 1
