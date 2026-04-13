@@ -132,7 +132,11 @@ async function apiFetch(path, options = {}) {
   // Single case by ID
   if (path.match(/\/api\/cases\/\d+/)) {
     const id = parseInt(path.split('/').pop());
-    return (ORL_DATA.cases || []).find(c => c.id === id) || null;
+    const found = (ORL_DATA.cases || []).find(c => c.id === id);
+    if (found && typeof found.decision_tree === 'string') {
+      try { found.decision_tree = JSON.parse(found.decision_tree); } catch(e) {}
+    }
+    return found || null;
   }
 
   // Clinical cases list
