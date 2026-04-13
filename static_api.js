@@ -130,7 +130,7 @@ async function apiFetch(path, options = {}) {
   }
 
   // Single case by ID
-  if (path.match(//api/cases/\d+/)) {
+  if (path.match(/\/api\/cases\/\d+/)) {
     const id = parseInt(path.split('/').pop());
     return (ORL_DATA.cases || []).find(c => c.id === id) || null;
   }
