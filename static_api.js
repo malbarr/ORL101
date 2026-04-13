@@ -132,12 +132,12 @@ async function apiFetch(path, options = {}) {
   // Single case by ID
   if (path.match(//api/cases/\d+/)) {
     const id = parseInt(path.split('/').pop());
-    return (ORL_DATA.clinical_cases || []).find(c => c.id === id) || null;
+    return (ORL_DATA.cases || []).find(c => c.id === id) || null;
   }
 
   // Clinical cases list
   if (path.includes('/api/cases') || path.includes('/api/clinical')) {
-    return ORL_DATA.clinical_cases || [];
+    return ORL_DATA.cases || [];
   }
 
   // Certificate
