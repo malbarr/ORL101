@@ -6,6 +6,8 @@
   <title>ORL101 — ENT for Primary Care</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="webapp.css">
   <style>
     /* Extra inline styles for safe-area etc. */
@@ -50,7 +52,14 @@
     </div>
   </div>
 
+  <!-- ── LEARN ── -->
+  <div class="home-section-label">📚 Learn</div>
   <div class="mode-grid">
+    <div class="mode-card" data-mode="course">
+      <div class="mode-icon">🎓</div>
+      <div class="mode-title">Course Mode</div>
+      <div class="mode-desc">20 chapters · Quick &amp; Detailed</div>
+    </div>
     <div class="mode-card" data-mode="exam">
       <div class="mode-icon">📝</div>
       <div class="mode-title">Exam Mode</div>
@@ -61,21 +70,75 @@
       <div class="mode-title">Cards Mode</div>
       <div class="mode-desc">Red flags &amp; clinical pearls</div>
     </div>
-    <div class="mode-card" data-mode="course">
-      <div class="mode-icon">🎓</div>
-      <div class="mode-title">Course Mode</div>
-      <div class="mode-desc">20 chapters + certificate</div>
-    </div>
     <div class="mode-card" data-mode="cases">
       <div class="mode-icon">🏥</div>
       <div class="mode-title">Cases</div>
       <div class="mode-desc">15 branching clinical cases</div>
     </div>
+  </div>
+
+  <!-- ── REFERENCE ── -->
+  <div class="home-section-label">📋 Quick Reference</div>
+  <div class="mode-grid">
+    <div class="mode-card" data-mode="actioncards">
+      <div class="mode-icon">🚨</div>
+      <div class="mode-title">If You See This</div>
+      <div class="mode-desc">See it → Do it. 30-sec cards</div>
+    </div>
+    <div class="mode-card" data-mode="highyield">
+      <div class="mode-icon">⚡</div>
+      <div class="mode-title">High Yield</div>
+      <div class="mode-desc">Key bullets per chapter</div>
+    </div>
+    <div class="mode-card" data-mode="rotation">
+      <div class="mode-icon">🩺</div>
+      <div class="mode-title">In Rotation</div>
+      <div class="mode-desc">Reports, referrals, consent</div>
+    </div>
+  </div>
+
+  <!-- ── GAMES ── -->
+  <div class="home-section-label">🎮 Games</div>
+  <div class="mode-grid">
     <div class="mode-card" data-mode="trivia">
       <div class="mode-icon">🎮</div>
-      <div class="mode-title">Trivia Game</div>
+      <div class="mode-title">Trivia</div>
       <div class="mode-desc">Rapid-fire ENT quiz</div>
     </div>
+    <div class="mode-card" data-mode="swipe">
+      <div class="mode-icon">🔥</div>
+      <div class="mode-title">Swipe Cards</div>
+      <div class="mode-desc">True or False? Swipe it</div>
+    </div>
+    <div class="mode-card" data-mode="survive">
+      <div class="mode-icon">💀</div>
+      <div class="mode-title">Survive the Shift</div>
+      <div class="mode-desc">5 patients. 3 lives.</div>
+    </div>
+    <div class="mode-card" data-mode="pickmistake">
+      <div class="mode-icon">🔍</div>
+      <div class="mode-title">Pick the Mistake</div>
+      <div class="mode-desc">Find the clinical error</div>
+    </div>
+    <div class="mode-card" data-mode="matching">
+      <div class="mode-icon">🧩</div>
+      <div class="mode-title">Matching</div>
+      <div class="mode-desc">Match pairs · Pass the river</div>
+    </div>
+  </div>
+
+  <!-- For Patients link -->
+  <div class="p-16" style="padding-top:4px; padding-bottom:4px;">
+    <a href="https://malbarr.github.io/Albar-Health-V2/" target="_blank" rel="noopener" style="text-decoration:none;">
+      <div style="display:flex; align-items:center; gap:14px; padding:16px 18px; border-radius:var(--radius); background:linear-gradient(135deg,#E8F5E9 0%,#C8E6C9 100%); border:1px solid #A5D6A7; cursor:pointer;">
+        <div style="font-size:28px;">👤</div>
+        <div style="flex:1;">
+          <div style="font-size:14px; font-weight:700; color:#2E7D32;">For Patients</div>
+          <div style="font-size:12px; color:#4CAF50; margin-top:2px;">Patient education mini-app →</div>
+        </div>
+        <div style="font-size:18px; color:#66BB6A;">›</div>
+      </div>
+    </a>
   </div>
 
   <!-- In Action card -->
@@ -299,6 +362,7 @@
     <div class="progress-overview">
       <h2>🎓 Course Mode</h2>
       <p>Learn all 20 ENT chapters systematically</p>
+      <div id="course-mode-toggle" class="course-mode-toggle"></div>
       <div class="progress-ring-wrap">
         <div class="progress-circle">
           <svg width="72" height="72" viewBox="0 0 72 72">
@@ -382,7 +446,7 @@
 
     <!-- Content -->
     <div class="chapter-reader">
-      <div id="subtopic-content" class="chapter-content-box">Loading...</div>
+      <div id="subtopic-content" class="subtopic-content">Loading...</div>
     </div>
 
     <!-- Prev / Next navigation -->
@@ -671,6 +735,167 @@
     </div><!-- end scrollable -->
   </div><!-- end play-view -->
 
+</section>
+
+<!-- ═══════════════════════════ ACTION CARDS (If You See This) ═══════ -->
+<section id="actioncards" class="section">
+  <div class="page-header">
+    <h1>🚨 If You See This, Do This</h1>
+    <p>30-second clinical action cards</p>
+  </div>
+  <div id="ac-list" class="p-16" style="display:flex; flex-direction:column; gap:12px;"></div>
+  <div id="ac-detail" class="hidden">
+    <div class="page-header" style="display:flex; align-items:center; gap:10px;">
+      <button onclick="ActionCards.backToList()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">←</button>
+      <div style="flex:1;"><h1 id="ac-detail-title" style="font-size:17px;"></h1></div>
+    </div>
+    <div id="ac-detail-content" class="p-16"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ HIGH YIELD ════════════════════════════ -->
+<section id="highyield" class="section">
+  <div class="page-header" style="background:linear-gradient(135deg,#1a1a2e,#0d4f52);">
+    <h1>⚡ High-Yield Bullets</h1>
+    <p>Key facts for exams & clinical practice</p>
+  </div>
+  <div id="hy-list" class="p-16" style="display:flex; flex-direction:column; gap:10px;"></div>
+  <div id="hy-detail" class="hidden">
+    <div class="page-header" style="display:flex; align-items:center; gap:10px; background:linear-gradient(135deg,#1a1a2e,#0d4f52);">
+      <button onclick="HighYield.backToList()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">←</button>
+      <div style="flex:1;"><h1 id="hy-detail-title" style="font-size:17px;"></h1></div>
+    </div>
+    <div id="hy-detail-content" class="p-16"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ IN ROTATION ═══════════════════════════ -->
+<section id="rotation" class="section">
+  <div class="page-header" style="background:linear-gradient(135deg,#0D7377,#2d6a4f);">
+    <h1>🩺 In Rotation</h1>
+    <p>Beyond history & examination — clinical skills guide</p>
+  </div>
+  <div id="rot-list" class="p-16" style="display:flex; flex-direction:column; gap:12px;"></div>
+  <div id="rot-detail" class="hidden">
+    <div class="page-header" style="display:flex; align-items:center; gap:10px; background:linear-gradient(135deg,#0D7377,#2d6a4f);">
+      <button onclick="Rotation.backToList()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">←</button>
+      <div style="flex:1;"><h1 id="rot-detail-title" style="font-size:17px;"></h1></div>
+    </div>
+    <div id="rot-detail-content" class="p-16">
+      <div class="subtopic-content" id="rot-content-body"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ SWIPE CARDS ═══════════════════════════ -->
+<section id="swipe" class="section">
+  <div id="swipe-start" style="text-align:center; padding:40px 20px;">
+    <div style="font-size:64px; margin-bottom:16px;">🔥</div>
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:8px;">Swipe Cards</h2>
+    <p style="color:var(--text-hint); margin-bottom:6px;">True or False? Swipe right or left.</p>
+    <p style="color:var(--text-hint); font-size:13px; margin-bottom:24px;">Tap ✅ for True · ❌ for False</p>
+    <button class="btn btn-primary btn-full" onclick="SwipeGame.start()">🚀 Start</button>
+  </div>
+  <div id="swipe-game" class="hidden" style="padding:20px; text-align:center;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div id="swipe-progress" style="font-size:13px; color:var(--text-hint);"></div>
+      <div id="swipe-score" style="font-size:15px; font-weight:800; color:var(--teal);"></div>
+    </div>
+    <div id="swipe-card" class="swipe-card-container">
+      <div id="swipe-statement" class="swipe-statement"></div>
+    </div>
+    <div style="display:flex; gap:16px; justify-content:center; margin-top:24px;">
+      <button class="swipe-btn swipe-false" onclick="SwipeGame.answer(false)">❌ FALSE</button>
+      <button class="swipe-btn swipe-true" onclick="SwipeGame.answer(true)">✅ TRUE</button>
+    </div>
+    <div id="swipe-feedback" class="swipe-feedback hidden"></div>
+  </div>
+  <div id="swipe-result" class="hidden" style="text-align:center; padding:40px 20px;">
+    <div id="swipe-result-emoji" style="font-size:56px; margin-bottom:12px;"></div>
+    <div id="swipe-result-score" style="font-size:36px; font-weight:800; color:var(--teal);"></div>
+    <div id="swipe-result-detail" style="font-size:14px; color:var(--text-hint); margin:8px 0 24px;"></div>
+    <button class="btn btn-primary btn-full" onclick="SwipeGame.start()" style="margin-bottom:10px;">🔄 Play Again</button>
+    <button class="btn btn-secondary btn-full" onclick="showSection('home')">🏠 Home</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ SURVIVE THE SHIFT ═════════════════════ -->
+<section id="survive" class="section">
+  <div id="surv-start" style="text-align:center; padding:40px 20px;">
+    <div style="font-size:64px; margin-bottom:16px;">💀</div>
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:8px;">Survive the Shift</h2>
+    <p style="color:var(--text-hint); margin-bottom:20px;">5 patients. 3 lives. Don't kill anyone.</p>
+    <div id="surv-shift-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;"></div>
+  </div>
+  <div id="surv-game" class="hidden" style="padding:16px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <div id="surv-lives" style="font-size:20px;"></div>
+      <div id="surv-patient-num" style="font-size:13px; color:var(--text-hint); font-weight:600;"></div>
+    </div>
+    <div id="surv-vignette" class="surv-vignette"></div>
+    <div id="surv-options" style="display:flex; flex-direction:column; gap:10px; margin-top:16px;"></div>
+    <div id="surv-feedback" class="hidden" style="margin-top:16px;"></div>
+    <button id="surv-next-btn" class="btn btn-primary btn-full hidden" onclick="SurviveGame.nextPatient()" style="margin-top:12px;">Next Patient →</button>
+  </div>
+  <div id="surv-result" class="hidden" style="text-align:center; padding:40px 20px;">
+    <div id="surv-result-emoji" style="font-size:64px; margin-bottom:12px;"></div>
+    <div id="surv-result-title" style="font-size:24px; font-weight:900; margin-bottom:8px;"></div>
+    <div id="surv-result-detail" style="font-size:14px; color:var(--text-hint); margin-bottom:24px;"></div>
+    <button class="btn btn-primary btn-full" onclick="SurviveGame.showStart()" style="margin-bottom:10px;">🔄 New Shift</button>
+    <button class="btn btn-secondary btn-full" onclick="showSection('home')">🏠 Home</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ PICK THE MISTAKE ══════════════════════ -->
+<section id="pickmistake" class="section">
+  <div id="pm-start" style="text-align:center; padding:40px 20px;">
+    <div style="font-size:64px; margin-bottom:16px;">🔍</div>
+    <h2 style="font-size:22px; font-weight:800; margin-bottom:8px;">Pick the Mistake</h2>
+    <p style="color:var(--text-hint); margin-bottom:24px;">Each statement has ONE clinical error. Tap the wrong part.</p>
+    <button class="btn btn-primary btn-full" onclick="PickMistake.start()">🚀 Start</button>
+  </div>
+  <div id="pm-game" class="hidden" style="padding:20px;">
+    <div style="display:flex; justify-content:space-between; margin-bottom:14px;">
+      <div id="pm-progress" style="font-size:13px; color:var(--text-hint);"></div>
+      <div id="pm-score" style="font-size:15px; font-weight:800; color:var(--teal);"></div>
+    </div>
+    <div id="pm-topic" style="font-size:11px; color:var(--teal); font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;"></div>
+    <div id="pm-statement" class="pm-statement"></div>
+    <div id="pm-feedback" class="hidden" style="margin-top:16px;"></div>
+    <button id="pm-next-btn" class="btn btn-primary btn-full hidden" onclick="PickMistake.next()" style="margin-top:12px;">Next →</button>
+  </div>
+  <div id="pm-result" class="hidden" style="text-align:center; padding:40px 20px;">
+    <div id="pm-result-emoji" style="font-size:56px; margin-bottom:12px;"></div>
+    <div id="pm-result-score" style="font-size:36px; font-weight:800; color:var(--teal);"></div>
+    <div id="pm-result-detail" style="font-size:14px; color:var(--text-hint); margin:8px 0 24px;"></div>
+    <button class="btn btn-primary btn-full" onclick="PickMistake.start()" style="margin-bottom:10px;">🔄 Play Again</button>
+    <button class="btn btn-secondary btn-full" onclick="showSection('home')">🏠 Home</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ MATCHING ══════════════════════════════ -->
+<section id="matching" class="section">
+  <div id="match-start">
+    <div class="page-header" style="background:linear-gradient(135deg,#1a1a2e,#2d3a6a);">
+      <h1>🧩 Matching — Pass the River</h1>
+      <p>Match the pairs to cross safely</p>
+    </div>
+    <div id="match-set-list" class="p-16" style="display:flex; flex-direction:column; gap:10px;"></div>
+  </div>
+  <div id="match-game" class="hidden" style="padding:16px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <button onclick="MatchGame.backToList()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-hint);">← Back</button>
+      <div id="match-title" style="font-size:14px; font-weight:700; color:var(--teal);"></div>
+      <div id="match-score" style="font-size:13px; color:var(--text-hint);"></div>
+    </div>
+    <div id="match-left" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;"></div>
+    <div id="match-right" style="display:flex; flex-direction:column; gap:8px;"></div>
+    <div id="match-result-msg" class="hidden" style="text-align:center; padding:24px; margin-top:16px;">
+      <div style="font-size:48px; margin-bottom:8px;">🏆</div>
+      <div style="font-size:18px; font-weight:800; color:var(--teal); margin-bottom:16px;">All Matched!</div>
+      <button class="btn btn-primary" onclick="MatchGame.backToList()">🧩 More Sets</button>
+    </div>
+  </div>
 </section>
 
 <!-- ═══════════════════════════ BOTTOM NAV ════════════════════════════ -->

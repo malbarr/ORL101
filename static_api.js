@@ -48,7 +48,11 @@ async function apiFetch(path, options = {}) {
   const subtopicDetail = path.match(/\/api\/subtopics\/(\d+)$/);
   if (subtopicDetail) {
     const stId = parseInt(subtopicDetail[1]);
-    return (ORL_DATA.subtopics || []).find(s => s.id === stId) || {};
+    const sub = (ORL_DATA.subtopics || []).find(s => s.id === stId) || {};
+    // Attach quick summary if available
+    const qs = (ORL_DATA.quick_summaries || []).find(q => q.subtopic_id === stId);
+    if (qs) sub.quick_summary = qs.summary;
+    return sub;
   }
 
   // Flashcards

@@ -452,16 +452,197 @@ body {
   color: var(--text);
 }
 
-/* ── Rendered content (shared by chapter-content-box & subtopic-content) ── */
-.chapter-content-box,
+/* ══════════════════════════════════════════════════════════════════════
+   Wikipedia-style Course Content
+   Clean, readable, scholarly — like a medical textbook article
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Container */
 .subtopic-content {
-  font-size: 15px;
-  line-height: 1.9;
-  color: var(--text);
-  letter-spacing: 0.01em;
+  padding: 4px 0;
 }
 
-.chapter-content-box h1, .subtopic-content h1 {
+.wiki-content {
+  font-family: 'Georgia', 'Noto Naskh Arabic', 'Times New Roman', serif;
+  font-size: 16.5px;
+  line-height: 1.85;
+  color: #202122;
+  letter-spacing: 0.005em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Paragraphs ── */
+.wiki-content p {
+  margin: 0 0 1.1em;
+  line-height: 1.85;
+  text-align: left;
+}
+
+.wiki-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Bold & Italic ── */
+.wiki-content strong {
+  font-weight: 700;
+  color: #000;
+}
+
+.wiki-content em {
+  font-style: italic;
+  color: #36454f;
+}
+
+/* ── Epigraph (opening quote) ── */
+.wiki-epigraph {
+  margin: 0 0 1.5em;
+  padding: 16px 20px 16px 22px;
+  border-left: 3px solid #0D7377;
+  background: #f8f9fa;
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: #444;
+  border-radius: 0 4px 4px 0;
+}
+
+/* ── Voice Box (من وحي القلم) ── */
+.wiki-voice-box {
+  margin: 1.4em 0;
+  padding: 18px 20px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-left: 4px solid #0D7377;
+  border-radius: 0 6px 6px 0;
+}
+
+.wiki-box-title {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0D7377;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.wiki-voice-text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #333;
+}
+
+.wiki-voice-text em {
+  color: #444;
+}
+
+/* ── Tables (Wikipedia-style) ── */
+.wiki-table-wrap {
+  margin: 1.3em 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.wiki-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  border: 1px solid #a2a9b1;
+  background: #fff;
+}
+
+.wiki-table thead {
+  background: #eaecf0;
+}
+
+.wiki-table th {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #202122;
+  border: 1px solid #a2a9b1;
+  background: #eaecf0;
+  vertical-align: top;
+}
+
+.wiki-table td {
+  padding: 9px 12px;
+  border: 1px solid #a2a9b1;
+  vertical-align: top;
+  color: #202122;
+  line-height: 1.6;
+}
+
+.wiki-table tbody tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.wiki-table td strong {
+  color: #000;
+}
+
+/* ── Image Captions ── */
+.wiki-caption {
+  font-style: italic;
+  font-size: 13.5px;
+  color: #555;
+  text-align: center;
+  margin: -0.5em 0 1.2em;
+  line-height: 1.5;
+}
+
+/* ── Lists ── */
+.wiki-content ol.wiki-list {
+  margin: 0.8em 0 1.2em;
+  padding-left: 24px;
+  font-family: 'Georgia', 'Noto Naskh Arabic', serif;
+}
+
+.wiki-content ol.wiki-list li {
+  margin-bottom: 6px;
+  line-height: 1.7;
+  padding-left: 4px;
+}
+
+.wiki-content ol.wiki-list li::marker {
+  color: #0D7377;
+  font-weight: 700;
+}
+
+/* ── Empty state ── */
+.wiki-empty {
+  text-align: center;
+  color: #888;
+  padding: 40px 20px;
+  font-style: italic;
+}
+
+/* ── Subtopic title area (Wikipedia-style) ── */
+#subtopic-title {
+  font-family: 'Georgia', 'Noto Naskh Arabic', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #000;
+  line-height: 1.3;
+  border-bottom: 1px solid #a2a9b1;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+}
+
+#subtopic-chapter-label {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  color: #72777d;
+  margin-bottom: 8px;
+}
+
+/* ── Legacy content styles (chapter-content-box — kept for non-wiki views) ── */
+.chapter-content-box h1 {
   font-size: 20px; font-weight: 800;
   color: var(--teal-dark);
   margin: 32px 0 14px;
@@ -470,9 +651,9 @@ body {
   border-radius: var(--radius-sm);
   border-left: 4px solid var(--teal);
 }
-.chapter-content-box h1:first-child, .subtopic-content h1:first-child { margin-top: 0; }
+.chapter-content-box h1:first-child { margin-top: 0; }
 
-.chapter-content-box h2, .subtopic-content h2 {
+.chapter-content-box h2 {
   font-size: 17px; font-weight: 700;
   color: var(--teal);
   margin: 28px 0 10px;
@@ -480,146 +661,129 @@ body {
   border-bottom: 2px solid rgba(13,115,119,0.15);
 }
 
-.chapter-content-box h3, .subtopic-content h3 {
-  font-size: 15px; font-weight: 700;
-  color: #2d3748;
-  margin: 22px 0 8px;
-  padding-left: 10px;
-  border-left: 3px solid var(--teal-light);
-}
-
-.chapter-content-box h4, .subtopic-content h4 {
-  font-size: 14px; font-weight: 600;
-  color: var(--teal-dark);
-  margin: 16px 0 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  font-size: 12px;
-}
-
-.chapter-content-box p, .subtopic-content p {
+.chapter-content-box p {
   margin: 0 0 16px;
   line-height: 1.9;
 }
 
-.chapter-content-box ul, .subtopic-content ul,
-.chapter-content-box ol, .subtopic-content ol {
-  margin: 8px 0 18px;
-  padding-left: 20px;
+.chapter-content-box strong, .chapter-content-box b {
+  font-weight: 700; color: #1a1a2e;
 }
 
-.chapter-content-box li, .subtopic-content li {
-  margin-bottom: 8px;
-  line-height: 1.75;
-  padding-left: 4px;
+.chapter-content-box em, .chapter-content-box i {
+  font-style: italic; color: #555;
 }
 
-.chapter-content-box ul > li::marker, .subtopic-content ul > li::marker {
-  color: var(--teal);
-  font-size: 18px;
-}
-
-.chapter-content-box ol > li::marker, .subtopic-content ol > li::marker {
-  color: var(--teal);
-  font-weight: 700;
-}
-
-.chapter-content-box strong, .subtopic-content strong,
-.chapter-content-box b, .subtopic-content b {
-  font-weight: 700;
-  color: #1a1a2e;
-}
-
-.chapter-content-box em, .subtopic-content em,
-.chapter-content-box i, .subtopic-content i {
-  font-style: italic;
-  color: #555;
-}
-
-.chapter-content-box blockquote, .subtopic-content blockquote {
+.chapter-content-box blockquote {
   border-left: 4px solid var(--teal);
   background: linear-gradient(135deg, #EBF8F8 0%, #F0FFF4 100%);
-  margin: 18px 0;
-  padding: 14px 18px;
+  margin: 18px 0; padding: 14px 18px;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  font-style: italic;
-  color: #333;
-  font-size: 14px;
-  line-height: 1.8;
+  font-style: italic; color: #333; font-size: 14px; line-height: 1.8;
 }
 
-.chapter-content-box code, .subtopic-content code {
-  background: rgba(13,115,119,0.08);
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-size: 13px;
-  font-family: 'SF Mono', Menlo, monospace;
-  color: var(--teal-dark);
+.chapter-content-box table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  margin: 18px 0; font-size: 13px;
+  border-radius: var(--radius-sm); overflow: hidden;
+  border: 1px solid var(--border); display: table;
 }
 
-.chapter-content-box pre, .subtopic-content pre {
-  background: #f8f9fa;
-  color: #2d3748;
-  padding: 16px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  overflow-x: auto;
-  margin: 14px 0;
-  font-size: 13px;
-  line-height: 1.6;
-}
-.chapter-content-box pre code, .subtopic-content pre code {
-  background: none; padding: 0; color: inherit;
+.chapter-content-box thead { background: var(--teal); color: white; }
+
+.chapter-content-box th {
+  padding: 10px 14px; text-align: left;
+  font-weight: 600; font-size: 12px; letter-spacing: 0.3px;
 }
 
-.chapter-content-box table, .subtopic-content table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  margin: 18px 0;
-  font-size: 13px;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  border: 1px solid var(--border);
-  display: table;
+.chapter-content-box td {
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.6;
 }
 
-.chapter-content-box thead, .subtopic-content thead {
-  background: var(--teal);
-  color: white;
-}
-
-.chapter-content-box th, .subtopic-content th {
-  padding: 10px 14px;
-  text-align: left;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.3px;
-}
-
-.chapter-content-box td, .subtopic-content td {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  vertical-align: top;
-  line-height: 1.6;
-}
-
-.chapter-content-box tbody tr:nth-child(even), .subtopic-content tbody tr:nth-child(even) {
+.chapter-content-box tbody tr:nth-child(even) {
   background: rgba(13,115,119,0.03);
 }
 
-.chapter-content-box hr, .subtopic-content hr {
-  border: none;
-  height: 0;
-  margin: 8px 0;
+.chapter-content-box hr { border: none; height: 0; margin: 8px 0; }
+
+.chapter-content-box img {
+  max-width: 100%; height: auto;
+  border-radius: var(--radius-sm);
+  margin: 14px 0; box-shadow: var(--shadow);
 }
 
-.chapter-content-box img, .subtopic-content img {
-  max-width: 100%;
-  height: auto;
-  border-radius: var(--radius-sm);
-  margin: 14px 0;
-  box-shadow: var(--shadow);
+/* ── Course Mode Toggle ────────────────────────────────────────────────── */
+.course-mode-toggle {
+  display: flex;
+  gap: 0;
+  margin-top: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.5px solid rgba(255,255,255,0.3);
+}
+
+.course-mode-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.course-mode-btn.active {
+  background: rgba(255,255,255,0.95);
+  color: var(--teal-dark);
+}
+
+.course-mode-btn:first-child {
+  border-right: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Quick Mode Badge */
+.wiki-quick-badge {
+  display: inline-block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #B45309;
+  background: #FEF3C7;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+
+/* Read More Link (Quick → Detailed) */
+.wiki-read-more {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding: 14px 18px;
+  background: #f0f7f7;
+  border: 1px solid #d1e7e8;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--teal);
+}
+
+.wiki-read-more:active {
+  background: #e0f0f0;
+  transform: scale(0.98);
+}
+
+.wiki-read-more-icon {
+  font-size: 20px;
 }
 
 /* ── Trivia Game ──────────────────────────────────────────────────────────── */
@@ -1498,4 +1662,358 @@ body {
   padding: 6px 14px;
   font-size: 13px;
   border-radius: var(--radius-sm);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ACTION CARDS — If You See This, Do This
+   ══════════════════════════════════════════════════════════════════════ */
+
+.ac-card-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px; background: var(--bg);
+  border-radius: var(--radius); border: 1px solid var(--border);
+  box-shadow: var(--shadow); cursor: pointer;
+  transition: all 0.15s;
+}
+.ac-card-item:active { transform: scale(0.98); opacity: 0.9; }
+.ac-card-emoji { font-size: 28px; flex-shrink: 0; }
+.ac-card-info { flex: 1; min-width: 0; }
+.ac-card-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.ac-card-meta { font-size: 12px; color: var(--text-hint); margin-top: 2px; }
+
+.ac-actions { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+
+.ac-action {
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: #f8f9fa;
+  border: 1px solid #e5e5e5;
+  border-left: 4px solid var(--teal);
+}
+.ac-action.urgent {
+  background: #FFF5F5;
+  border-color: #FED7D7;
+  border-left-color: var(--red);
+}
+
+.ac-see {
+  font-size: 14px; font-weight: 600; color: var(--text);
+  line-height: 1.5; margin-bottom: 6px;
+}
+.ac-arrow {
+  font-size: 16px; font-weight: 800; color: var(--teal);
+  margin-bottom: 4px;
+}
+.ac-action.urgent .ac-arrow { color: var(--red); }
+
+.ac-do {
+  font-size: 14px; font-weight: 700; color: var(--teal-dark);
+  line-height: 1.5;
+}
+.ac-action.urgent .ac-do { color: #C53030; }
+
+.ac-traps-box {
+  background: #FFFBEB; border: 1px solid #FDE68A;
+  border-radius: var(--radius); padding: 16px;
+  margin-top: 8px;
+}
+.ac-traps-title {
+  font-size: 14px; font-weight: 700; color: #92400E;
+  margin-bottom: 12px;
+}
+.ac-trap {
+  font-size: 13px; color: #78350F; line-height: 1.6;
+  padding: 6px 0; border-bottom: 1px solid #FDE68A;
+}
+.ac-trap:last-child { border-bottom: none; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   HIGH YIELD — Key Bullets
+   ══════════════════════════════════════════════════════════════════════ */
+
+.hy-card-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; background: var(--bg);
+  border-radius: var(--radius); border: 1px solid var(--border);
+  box-shadow: var(--shadow); cursor: pointer;
+  transition: all 0.15s;
+}
+.hy-card-item:active { transform: scale(0.98); }
+.hy-card-num {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: linear-gradient(135deg, #1a1a2e, #0d4f52);
+  color: white; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; flex-shrink: 0;
+}
+.hy-card-info { flex: 1; min-width: 0; }
+.hy-card-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.hy-card-meta { font-size: 12px; color: var(--text-hint); margin-top: 2px; }
+
+.hy-bullets { display: flex; flex-direction: column; gap: 0; }
+.hy-bullet {
+  display: flex; gap: 8px; padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px; line-height: 1.6; color: var(--text);
+}
+.hy-bullet:last-child { border-bottom: none; }
+.hy-dot { color: var(--teal); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+.hy-pearl {
+  display: flex; gap: 10px; align-items: flex-start;
+  margin-top: 20px; padding: 16px;
+  background: linear-gradient(135deg, #FEF3C7, #FFFBEB);
+  border: 1px solid #FDE68A; border-radius: var(--radius);
+  font-size: 14px; font-weight: 600; line-height: 1.6;
+  color: #78350F;
+}
+.hy-pearl-icon { font-size: 20px; flex-shrink: 0; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   IN ROTATION — Clinical Skills Guide
+   ══════════════════════════════════════════════════════════════════════ */
+
+.rot-card-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px; background: var(--bg);
+  border-radius: var(--radius); border: 1px solid var(--border);
+  box-shadow: var(--shadow); cursor: pointer;
+  transition: all 0.15s;
+}
+.rot-card-item:active { transform: scale(0.98); opacity: 0.9; }
+.rot-card-icon {
+  font-size: 28px; width: 48px; height: 48px;
+  border-radius: 12px; background: rgba(13,115,119,0.08);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.rot-card-info { flex: 1; min-width: 0; }
+.rot-card-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.rot-card-desc { font-size: 12px; color: var(--text-hint); margin-top: 2px; }
+
+.p-16 { padding: 16px; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   SWIPE CARDS GAME
+   ══════════════════════════════════════════════════════════════════════ */
+
+.swipe-card-container {
+  background: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  border: 2px solid var(--border);
+  padding: 32px 24px;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.swipe-card-container.swipe-right {
+  transform: translateX(120%) rotate(12deg);
+  opacity: 0;
+}
+.swipe-card-container.swipe-left {
+  transform: translateX(-120%) rotate(-12deg);
+  opacity: 0;
+}
+
+.swipe-statement {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--text);
+  text-align: center;
+}
+
+.swipe-btn {
+  padding: 14px 28px;
+  border-radius: 50px;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  font-size: 16px;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.15s;
+  min-width: 120px;
+}
+.swipe-btn:active { transform: scale(0.95); }
+.swipe-true { border-color: var(--green); color: var(--green); }
+.swipe-true:active { background: rgba(67,160,71,0.1); }
+.swipe-false { border-color: var(--red); color: var(--red); }
+.swipe-false:active { background: rgba(229,57,53,0.1); }
+
+.swipe-feedback {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: left;
+}
+.swipe-feedback.correct {
+  background: #DCFCE7;
+  color: #166534;
+  border: 1px solid #BBF7D0;
+}
+.swipe-feedback.incorrect {
+  background: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   SURVIVE THE SHIFT GAME
+   ══════════════════════════════════════════════════════════════════════ */
+
+.surv-vignette {
+  background: linear-gradient(135deg, #0d1b2a, #1a2a4a);
+  color: white;
+  padding: 20px;
+  border-radius: var(--radius);
+  font-size: 15px;
+  line-height: 1.7;
+  font-weight: 500;
+  border-left: 4px solid var(--teal-light);
+}
+
+.surv-option-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  line-height: 1.5;
+  transition: all 0.15s;
+  font-family: var(--font);
+}
+.surv-option-btn:active {
+  border-color: var(--teal);
+  background: rgba(13,115,119,0.08);
+  transform: scale(0.98);
+}
+.surv-option-btn:disabled { cursor: default; opacity: 0.85; }
+.surv-option-btn.surv-correct {
+  border-color: var(--green);
+  background: rgba(67,160,71,0.1);
+  color: #1B5E20;
+}
+.surv-option-btn.surv-wrong {
+  border-color: var(--red);
+  background: rgba(229,57,53,0.1);
+  color: #B71C1C;
+}
+
+.surv-fb-correct {
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: #DCFCE7;
+  color: #166534;
+  border: 1px solid #BBF7D0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.surv-fb-wrong {
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ── Home Section Labels ───────────────────────────────────────────── */
+.home-section-label {
+  padding: 18px 16px 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-hint);
+  letter-spacing: 0.3px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PICK THE MISTAKE GAME
+   ══════════════════════════════════════════════════════════════════════ */
+
+.pm-statement {
+  background: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  padding: 24px 20px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.pm-segment {
+  cursor: pointer;
+  padding: 2px 1px;
+  border-radius: 3px;
+  transition: background 0.15s;
+}
+.pm-segment:hover {
+  background: rgba(13,115,119,0.08);
+}
+.pm-correct-pick {
+  background: #FEE2E2 !important;
+  color: #991B1B;
+  text-decoration: line-through;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+.pm-wrong-pick {
+  background: #FEF3C7;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MATCHING GAME (Pass the River)
+   ══════════════════════════════════════════════════════════════════════ */
+
+.match-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font);
+  line-height: 1.4;
+  transition: all 0.15s;
+}
+
+.match-btn:active { transform: scale(0.98); }
+
+.match-selected {
+  border-color: var(--teal) !important;
+  background: rgba(13,115,119,0.08);
+  box-shadow: 0 0 0 2px rgba(13,115,119,0.2);
+}
+
+.match-done {
+  background: #DCFCE7 !important;
+  border-color: #86EFAC !important;
+  color: #166534;
+  opacity: 0.7;
+  cursor: default;
+}
+
+.match-wrong {
+  background: #FEE2E2 !important;
+  border-color: #FECACA !important;
+  animation: shake 0.4s ease;
 }

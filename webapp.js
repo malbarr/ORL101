@@ -4,29 +4,235 @@
 
 const API = '';  // relative base URL
 
-// ── Content cleaner ────────────────────────────────────────────────────
+// ── Content cleaner (legacy — used by Action guides) ──────────────────
 function cleanContent(text) {
   if (!text) return '';
   return text
-    // Remove all decorative separator lines (-----, =====, _____, +---+)
     .replace(/^[\s]*[-]{3,}[\s]*$/gm, '')
     .replace(/^[\s]*[=]{3,}[\s]*$/gm, '')
     .replace(/^[\s]*[_]{3,}[\s]*$/gm, '')
     .replace(/^\+[-+]+\+$/gm, '')
     .replace(/^[=+\-|]{4,}$/gm, '')
-    // Remove Pandoc grid table borders
-    .replace(/^\|[-:| ]+\|$/gm, (match) => {
-      if (match.match(/\|[\s]*[-:]+[\s]*\|/)) return match;
-      return '';
-    })
-    // Remove "من وحي القلم" decorative labels
+    .replace(/^\|[-:| ]+\|$/gm, (m) => m.match(/\|[\s]*[-:]+[\s]*\|/) ? m : '')
     .replace(/[✍✎]\s*من وحي القلم[^\n]*/g, '')
     .replace(/\*\*✍\s*من وحي القلم[^*]*\*\*/g, '')
-    // Clean triple-dash (--- → —)
     .replace(/\s---\s/g, ' — ')
-    // Remove excessive blank lines
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+}
+
+// ══════════════════════════════════════════════════════════════════════
+//  Wiki-style Content Renderer
+//  Converts Pandoc plain-text → clean Wikipedia-like HTML
+// ══════════════════════════════════════════════════════════════════════
+
+function renderWikiContent(raw) {
+  if (!raw) return '<p class="wiki-empty">No content available.</p>';
+
+  let text = raw.replace(/\\'/g, "'").replace(/\\"/g, '"');
+
+  // ── 1. Extract "من وحي القلم" / voice boxes ──
+  const boxes = [];
+  // Pattern: lines starting with | that form a block
+  text = text.replace(
+    /(?:^|\n)((?:\|[^\n]*\n){2,})/g,
+    (match) => {
+      const lines = match.split('\n')
+        .map(l => l.replace(/^\|\s*/, '').replace(/\s*\|?\s*$/, '').trim())
+        .filter(l => l && l !== '|' && !l.match(/^[-=+]+$/) && !l.match(/^\*\*$/));
+      // Remove the title line (** Voice box header **)
+      const filtered = lines.filter(l => !l.match(/^\*\*[✍✎🔬💡🚩]/) && l !== '**');
+      const content = filtered.join(' ')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+        .trim();
+      if (content.length > 20) {
+        // Try to detect the box title
+        const titleLine = lines.find(l => l.match(/^\*\*[✍✎🔬💡🚩]/));
+        let title = '';
+        if (titleLine) {
+          title = titleLine.replace(/\*\*/g, '').trim();
+        }
+        const idx = boxes.length;
+        boxes.push({ title, content });
+        return `\n%%BOX_${idx}%%\n`;
+      }
+      return match;
+    }
+  );
+
+  // ── 2. Extract Pandoc-style tables ──
+  const tables = [];
+  // Find blocks: bold headers → separator(---) → data rows
+  text = text.replace(
+    /(\n?[ ]*\*\*[^\n]+\*\*[^\n]*\n[ ]*[-]{3,}[- ]*\n(?:[ ]*[^\n]+\n?)*)/g,
+    (match) => {
+      if (match.match(/%%/)) return match;
+      const parsed = parsePandocTable(match);
+      if (parsed) {
+        const idx = tables.length;
+        tables.push(parsed);
+        return `\n%%TABLE_${idx}%%\n`;
+      }
+      return match;
+    }
+  );
+
+  // ── 3. Clean decoration ──
+  text = text
+    .replace(/^\+[-+]+\+$/gm, '')
+    .replace(/^[-]{4,}$/gm, '')
+    .replace(/^[=]{4,}$/gm, '')
+    .replace(/^[_]{4,}$/gm, '')
+    .replace(/\s---\s/g, ' — ');
+
+  // ── 4. Build HTML from paragraphs ──
+  const blocks = text.split(/\n\n+/);
+  let html = '';
+
+  for (const block of blocks) {
+    const t = block.trim();
+    if (!t) continue;
+
+    // Placeholder: voice box
+    const boxM = t.match(/^%%BOX_(\d+)%%$/);
+    if (boxM) {
+      const b = boxes[parseInt(boxM[1])];
+      const icon = b.title.match(/[✍✎]/) ? '✍' : b.title.match(/🔬/) ? '🔬' : b.title.match(/💡/) ? '💡' : b.title.match(/🚩/) ? '🚩' : '✍';
+      const titleHtml = b.title ? `<div class="wiki-box-title">${icon} ${b.title.replace(/^[✍✎🔬💡🚩]\s*/, '')}</div>` : '';
+      html += `<aside class="wiki-voice-box">${titleHtml}<div class="wiki-voice-text">${b.content}</div></aside>`;
+      continue;
+    }
+
+    // Placeholder: table
+    const tblM = t.match(/^%%TABLE_(\d+)%%$/);
+    if (tblM) {
+      html += tables[parseInt(tblM[1])];
+      continue;
+    }
+
+    // Epigraph (opening italic quote)
+    if (t.match(/^\*"/) || t.match(/^\*\\?"/)) {
+      const q = t.replace(/^\*"?/, '').replace(/"?\*$/, '').trim();
+      html += `<blockquote class="wiki-epigraph">${q}</blockquote>`;
+      continue;
+    }
+
+    // Skip stray decorative lines
+    if (t.match(/^[-=_|+]{3,}$/) || t === '|') continue;
+
+    // Image caption lines (italic text between asterisks referencing figures)
+    if (t.match(/^\*[^*]+\*$/) && t.length < 200 && (t.includes('—') || t.includes('anatomy') || t.includes('examination') || t.includes('view') || t.includes('Figure'))) {
+      html += `<p class="wiki-caption">${t.replace(/^\*/, '').replace(/\*$/, '')}</p>`;
+      continue;
+    }
+
+    // Process inline formatting
+    let processed = t
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+      .replace(/\n/g, ' ')
+      .replace(/\s{2,}/g, ' ');
+
+    // Arrows / special chars
+    processed = processed.replace(/→/g, '→').replace(/←/g, '←');
+
+    html += `<p>${processed}</p>`;
+  }
+
+  return `<div class="wiki-content">${html}</div>`;
+}
+
+// ── Pandoc table parser ───────────────────────────────────────────────
+function parsePandocTable(block) {
+  const allLines = block.split('\n').filter(l => l.trim());
+  if (allLines.length < 3) return null;
+
+  // Find separator line index
+  let sepIdx = -1;
+  for (let i = 0; i < allLines.length; i++) {
+    if (allLines[i].match(/^\s*[-]{3,}[\s-]*$/) && i > 0) {
+      sepIdx = i;
+      break;
+    }
+  }
+  if (sepIdx < 0) return null;
+
+  // Headers from line(s) before separator
+  const headerLine = allLines.slice(0, sepIdx).join(' ');
+  const headers = [];
+  const re = /\*\*([^*]+)\*\*/g;
+  let m;
+  while ((m = re.exec(headerLine)) !== null) {
+    headers.push(m[1].trim());
+  }
+  if (headers.length < 2) return null;
+
+  // Detect column boundaries from separator dashes
+  const sepLine = allLines[sepIdx];
+  const colRanges = [];
+  const dashRe = /(-{2,})/g;
+  while ((m = dashRe.exec(sepLine)) !== null) {
+    colRanges.push({ start: m.index, end: m.index + m[0].length });
+  }
+
+  // If column ranges don't match headers, fall back to equal splits
+  if (colRanges.length !== headers.length) {
+    const w = Math.floor(sepLine.length / headers.length);
+    colRanges.length = 0;
+    for (let i = 0; i < headers.length; i++) {
+      colRanges.push({ start: i * w, end: (i + 1) * w });
+    }
+  }
+
+  // Parse data rows
+  const dataLines = allLines.slice(sepIdx + 1)
+    .filter(l => !l.match(/^\s*[-=]{3,}/)); // skip trailing separators
+
+  const rows = [];
+  let curRow = null;
+
+  for (const line of dataLines) {
+    // Extract text at each column position
+    const cells = colRanges.map((r, ci) => {
+      const end = ci < colRanges.length - 1 ? colRanges[ci + 1].start : line.length;
+      return (line.substring(r.start, end) || '').trim();
+    });
+
+    // Is this a new row? Check if col-0 has content starting near the left edge
+    const col0 = cells[0].replace(/\*\*/g, '').trim();
+    const leftMost = line.search(/\S/);
+    const isNew = col0.length > 0 && leftMost <= (colRanges[0].start + 3);
+
+    if (isNew) {
+      if (curRow) rows.push(curRow);
+      curRow = cells.map(c => c);
+    } else if (curRow) {
+      cells.forEach((c, i) => {
+        if (c) curRow[i] = (curRow[i] ? curRow[i] + ' ' : '') + c;
+      });
+    }
+  }
+  if (curRow) rows.push(curRow);
+  if (rows.length === 0) return null;
+
+  // Build HTML
+  let html = '<div class="wiki-table-wrap"><table class="wiki-table"><thead><tr>';
+  headers.forEach(h => { html += `<th>${h}</th>`; });
+  html += '</tr></thead><tbody>';
+  rows.forEach(row => {
+    html += '<tr>';
+    for (let c = 0; c < headers.length; c++) {
+      let cell = (row[c] || '').trim()
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+        .replace(/\\'/g, "'");
+      html += `<td>${cell}</td>`;
+    }
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+  return html;
 }
 
 // ── Telegram WebApp SDK ──────────────────────────────────────────────────
@@ -480,9 +686,32 @@ const Course = {
   currentChapter: null,
   subtopics: [],
   currentSubTopicIndex: 0,
+  mode: localStorage.getItem('orl101_course_mode') || 'quick', // 'quick' or 'detailed'
 
   async init() {
     await this.loadProgress();
+    this.initModeToggle();
+  },
+
+  initModeToggle() {
+    const toggleWrap = document.getElementById('course-mode-toggle');
+    if (!toggleWrap) return;
+    toggleWrap.innerHTML = `
+      <button class="course-mode-btn ${this.mode === 'quick' ? 'active' : ''}" data-mode="quick">⚡ Quick Review</button>
+      <button class="course-mode-btn ${this.mode === 'detailed' ? 'active' : ''}" data-mode="detailed">📖 Detailed</button>
+    `;
+    toggleWrap.querySelectorAll('.course-mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.mode = btn.dataset.mode;
+        localStorage.setItem('orl101_course_mode', this.mode);
+        toggleWrap.querySelectorAll('.course-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === this.mode));
+        // Re-render current subtopic if viewing one
+        if (!document.getElementById('course-subtopic-view').classList.contains('hidden')) {
+          this.openSubTopic(this.currentSubTopicIndex);
+        }
+        haptic('light');
+      });
+    });
   },
 
   async loadProgress() {
@@ -681,10 +910,30 @@ const Course = {
 
     try {
       const data = await apiFetch(`/api/subtopics/${st.id}`);
-      if (window.marked) {
-        contentEl.innerHTML = marked.parse(cleanContent(data.content || 'No content.'));
+
+      if (this.mode === 'quick' && data.quick_summary) {
+        // Quick Mode: concise summary + link to detailed
+        const summaryHtml = renderWikiContent(data.quick_summary);
+        contentEl.innerHTML = `
+          <div class="wiki-quick-badge">⚡ Quick Review</div>
+          ${summaryHtml}
+          <div class="wiki-read-more" id="read-more-link">
+            <span class="wiki-read-more-icon">📖</span>
+            <span>Read full topic in Detailed Mode →</span>
+          </div>
+        `;
+        document.getElementById('read-more-link')?.addEventListener('click', () => {
+          this.mode = 'detailed';
+          localStorage.setItem('orl101_course_mode', 'detailed');
+          // Update toggle buttons
+          document.querySelectorAll('.course-mode-btn').forEach(b =>
+            b.classList.toggle('active', b.dataset.mode === 'detailed'));
+          this.openSubTopic(this.currentSubTopicIndex);
+          haptic('light');
+        });
       } else {
-        contentEl.innerHTML = (data.content || 'No content.').replace(/\n/g, '<br>');
+        // Detailed Mode: full wiki content
+        contentEl.innerHTML = renderWikiContent(data.content || '');
       }
     } catch (e) {
       contentEl.innerHTML = '<p style="color:var(--red);">Failed to load content.</p>';
@@ -1654,6 +1903,562 @@ const Cases = {
 };
 
 
+// ── ACTION CARDS (If You See This, Do This) ──────────────────────────
+const ActionCards = {
+  init() {
+    const cards = ORL_DATA.action_cards || [];
+    const list = document.getElementById('ac-list');
+    if (!list || !cards.length) return;
+    list.innerHTML = '';
+    cards.forEach((card, idx) => {
+      const el = document.createElement('div');
+      el.className = 'ac-card-item';
+      el.innerHTML = `
+        <div class="ac-card-emoji">${card.emoji}</div>
+        <div class="ac-card-info">
+          <div class="ac-card-title">${card.title}</div>
+          <div class="ac-card-meta">${card.actions.length} actions · ${card.traps.length} exam traps</div>
+        </div>
+        <div style="color:var(--text-hint); font-size:18px;">›</div>
+      `;
+      el.addEventListener('click', () => { haptic('light'); this.openCard(idx); });
+      list.appendChild(el);
+    });
+  },
+
+  openCard(idx) {
+    const card = (ORL_DATA.action_cards || [])[idx];
+    if (!card) return;
+    document.getElementById('ac-list').classList.add('hidden');
+    document.getElementById('ac-detail').classList.remove('hidden');
+    document.getElementById('ac-detail-title').textContent = `${card.emoji} ${card.title}`;
+
+    let html = '<div class="ac-actions">';
+    card.actions.forEach(a => {
+      const cls = a.urgent ? 'ac-action urgent' : 'ac-action';
+      html += `<div class="${cls}">
+        <div class="ac-see">${a.urgent ? '🚨' : '👁'} ${a.see}</div>
+        <div class="ac-arrow">→</div>
+        <div class="ac-do">${a.do}</div>
+      </div>`;
+    });
+    html += '</div>';
+
+    if (card.traps && card.traps.length) {
+      html += '<div class="ac-traps-box"><div class="ac-traps-title">🧪 Exam Traps</div>';
+      card.traps.forEach(t => {
+        html += `<div class="ac-trap">⚡ ${t}</div>`;
+      });
+      html += '</div>';
+    }
+
+    document.getElementById('ac-detail-content').innerHTML = html;
+    document.getElementById('ac-detail-content').scrollTop = 0;
+  },
+
+  backToList() {
+    document.getElementById('ac-list').classList.remove('hidden');
+    document.getElementById('ac-detail').classList.add('hidden');
+    haptic('light');
+  }
+};
+
+// ── HIGH YIELD ───────────────────────────────────────────────────────
+const HighYield = {
+  init() {
+    const cards = ORL_DATA.high_yield || [];
+    const list = document.getElementById('hy-list');
+    if (!list || !cards.length) return;
+    list.innerHTML = '';
+    cards.forEach((card, idx) => {
+      const el = document.createElement('div');
+      el.className = 'hy-card-item';
+      el.innerHTML = `
+        <div class="hy-card-num">Ch.${card.chapter}</div>
+        <div class="hy-card-info">
+          <div class="hy-card-title">${card.title.replace(/^Ch\.\d+\s*/, '')}</div>
+          <div class="hy-card-meta">${card.bullets.length} key points</div>
+        </div>
+        <div style="color:var(--text-hint); font-size:18px;">›</div>
+      `;
+      el.addEventListener('click', () => { haptic('light'); this.openCard(idx); });
+      list.appendChild(el);
+    });
+  },
+
+  openCard(idx) {
+    const card = (ORL_DATA.high_yield || [])[idx];
+    if (!card) return;
+    document.getElementById('hy-list').classList.add('hidden');
+    document.getElementById('hy-detail').classList.remove('hidden');
+    document.getElementById('hy-detail-title').textContent = card.title;
+
+    let html = '<div class="hy-bullets">';
+    card.bullets.forEach(b => {
+      html += `<div class="hy-bullet"><span class="hy-dot">•</span> ${b}</div>`;
+    });
+    html += '</div>';
+
+    if (card.pearl) {
+      html += `<div class="hy-pearl"><span class="hy-pearl-icon">💡</span> ${card.pearl}</div>`;
+    }
+
+    document.getElementById('hy-detail-content').innerHTML = html;
+    document.getElementById('hy-detail-content').scrollTop = 0;
+  },
+
+  backToList() {
+    document.getElementById('hy-list').classList.remove('hidden');
+    document.getElementById('hy-detail').classList.add('hidden');
+    haptic('light');
+  }
+};
+
+// ── IN ROTATION ──────────────────────────────────────────────────────
+const Rotation = {
+  init() {
+    const items = ORL_DATA.rotation || [];
+    const list = document.getElementById('rot-list');
+    if (!list || !items.length) return;
+    list.innerHTML = '';
+    items.forEach((item, idx) => {
+      const el = document.createElement('div');
+      el.className = 'rot-card-item';
+      el.innerHTML = `
+        <div class="rot-card-icon">${item.icon}</div>
+        <div class="rot-card-info">
+          <div class="rot-card-title">${item.title}</div>
+          <div class="rot-card-desc">${item.desc}</div>
+        </div>
+        <div style="color:var(--text-hint); font-size:18px;">›</div>
+      `;
+      el.addEventListener('click', () => { haptic('light'); this.openItem(idx); });
+      list.appendChild(el);
+    });
+  },
+
+  openItem(idx) {
+    const item = (ORL_DATA.rotation || [])[idx];
+    if (!item) return;
+    document.getElementById('rot-list').classList.add('hidden');
+    document.getElementById('rot-detail').classList.remove('hidden');
+    document.getElementById('rot-detail-title').textContent = `${item.icon} ${item.title}`;
+    document.getElementById('rot-content-body').innerHTML = renderWikiContent(item.content || '');
+    document.getElementById('rot-detail-content').scrollTop = 0;
+  },
+
+  backToList() {
+    document.getElementById('rot-list').classList.remove('hidden');
+    document.getElementById('rot-detail').classList.add('hidden');
+    haptic('light');
+  }
+};
+
+
+// ── SWIPE CARDS GAME ─────────────────────────────────────────────────
+const SwipeGame = {
+  cards: [],
+  current: 0,
+  score: 0,
+  total: 0,
+
+  start() {
+    const all = ORL_DATA.swipe_cards || [];
+    // Shuffle
+    this.cards = [...all].sort(() => Math.random() - 0.5).slice(0, 15);
+    this.current = 0;
+    this.score = 0;
+    this.total = this.cards.length;
+
+    document.getElementById('swipe-start').classList.add('hidden');
+    document.getElementById('swipe-result').classList.add('hidden');
+    document.getElementById('swipe-game').classList.remove('hidden');
+    this.renderCard();
+  },
+
+  renderCard() {
+    if (this.current >= this.cards.length) { this.finish(); return; }
+    const card = this.cards[this.current];
+    document.getElementById('swipe-statement').textContent = card.statement;
+    document.getElementById('swipe-progress').textContent = `${this.current + 1} / ${this.total}`;
+    document.getElementById('swipe-score').textContent = `${this.score} pts`;
+    document.getElementById('swipe-feedback').classList.add('hidden');
+    // Reset card animation
+    const cardEl = document.getElementById('swipe-card');
+    cardEl.className = 'swipe-card-container';
+  },
+
+  answer(userAnswer) {
+    const card = this.cards[this.current];
+    const correct = userAnswer === card.answer;
+    if (correct) this.score++;
+
+    const cardEl = document.getElementById('swipe-card');
+    cardEl.classList.add(userAnswer ? 'swipe-right' : 'swipe-left');
+
+    const fb = document.getElementById('swipe-feedback');
+    fb.className = `swipe-feedback ${correct ? 'correct' : 'incorrect'}`;
+    fb.innerHTML = `<strong>${correct ? '✅ Correct!' : '❌ Wrong!'}</strong> ${card.explanation || ''}`;
+    fb.classList.remove('hidden');
+
+    document.getElementById('swipe-score').textContent = `${this.score} pts`;
+
+    setTimeout(() => {
+      this.current++;
+      this.renderCard();
+    }, 1800);
+  },
+
+  finish() {
+    document.getElementById('swipe-game').classList.add('hidden');
+    document.getElementById('swipe-result').classList.remove('hidden');
+    const pct = Math.round((this.score / this.total) * 100);
+    document.getElementById('swipe-result-emoji').textContent = pct >= 80 ? '🏆' : pct >= 60 ? '👍' : '📚';
+    document.getElementById('swipe-result-score').textContent = `${this.score} / ${this.total}`;
+    document.getElementById('swipe-result-detail').textContent = `${pct}% correct`;
+  }
+};
+
+// ── SURVIVE THE SHIFT GAME ──────────────────────────────────────────
+const SurviveGame = {
+  shifts: [],
+  currentShift: null,
+  patientIdx: 0,
+  lives: 3,
+  saved: 0,
+
+  showStart() {
+    this.shifts = ORL_DATA.survive_shifts || [];
+    document.getElementById('surv-start').classList.remove('hidden');
+    document.getElementById('surv-game').classList.add('hidden');
+    document.getElementById('surv-result').classList.add('hidden');
+
+    const list = document.getElementById('surv-shift-list');
+    list.innerHTML = '';
+    this.shifts.forEach((shift, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-primary btn-full';
+      btn.style.cssText = 'display:flex; align-items:center; gap:10px; justify-content:center;';
+      btn.innerHTML = `<span style="font-size:20px;">${shift.icon}</span> ${shift.name}`;
+      btn.addEventListener('click', () => this.startShift(idx));
+      list.appendChild(btn);
+    });
+  },
+
+  startShift(idx) {
+    this.currentShift = this.shifts[idx];
+    this.patientIdx = 0;
+    this.lives = 3;
+    this.saved = 0;
+
+    document.getElementById('surv-start').classList.add('hidden');
+    document.getElementById('surv-game').classList.remove('hidden');
+    document.getElementById('surv-result').classList.add('hidden');
+    this.renderPatient();
+  },
+
+  renderPatient() {
+    if (this.patientIdx >= this.currentShift.patients.length || this.lives <= 0) {
+      this.finish();
+      return;
+    }
+    const p = this.currentShift.patients[this.patientIdx];
+    document.getElementById('surv-lives').textContent = '❤️'.repeat(this.lives) + '🖤'.repeat(3 - this.lives);
+    document.getElementById('surv-patient-num').textContent = `Patient ${this.patientIdx + 1} of ${this.currentShift.patients.length}`;
+    document.getElementById('surv-vignette').textContent = p.vignette;
+    document.getElementById('surv-feedback').classList.add('hidden');
+    document.getElementById('surv-next-btn').classList.add('hidden');
+
+    const optEl = document.getElementById('surv-options');
+    optEl.innerHTML = '';
+    p.options.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'surv-option-btn';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => this.selectOption(oi));
+      optEl.appendChild(btn);
+    });
+  },
+
+  selectOption(idx) {
+    const p = this.currentShift.patients[this.patientIdx];
+    const correct = idx === p.correct;
+
+    // Disable all options
+    document.querySelectorAll('.surv-option-btn').forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === p.correct) btn.classList.add('surv-correct');
+      if (i === idx && !correct) btn.classList.add('surv-wrong');
+    });
+
+    if (correct) {
+      this.saved++;
+    } else {
+      this.lives--;
+      document.getElementById('surv-lives').textContent = '❤️'.repeat(this.lives) + '🖤'.repeat(3 - this.lives);
+    }
+
+    const fb = document.getElementById('surv-feedback');
+    fb.className = correct ? 'surv-fb-correct' : 'surv-fb-wrong';
+    fb.innerHTML = `<strong>${correct ? '✅ Patient saved!' : '☠️ Patient lost.'}</strong> ${correct ? p.alive : p.dead}`;
+    fb.classList.remove('hidden');
+
+    document.getElementById('surv-next-btn').classList.remove('hidden');
+    if (this.lives <= 0) {
+      document.getElementById('surv-next-btn').textContent = 'See Results';
+    }
+  },
+
+  nextPatient() {
+    this.patientIdx++;
+    this.renderPatient();
+  },
+
+  finish() {
+    document.getElementById('surv-game').classList.add('hidden');
+    document.getElementById('surv-result').classList.remove('hidden');
+    const total = this.currentShift.patients.length;
+    const survived = this.lives > 0;
+
+    document.getElementById('surv-result-emoji').textContent = survived ? (this.saved === total ? '🏆' : '🩺') : '💀';
+    document.getElementById('surv-result-title').textContent = survived
+      ? (this.saved === total ? 'Perfect Shift!' : 'Shift Complete')
+      : 'Shift Failed';
+    document.getElementById('surv-result-detail').textContent =
+      `${this.saved} / ${total} patients saved · ${this.lives} lives remaining`;
+  }
+};
+
+// ── PICK THE MISTAKE GAME ────────────────────────────────────────────
+const PickMistake = {
+  items: [], current: 0, score: 0,
+
+  start() {
+    this.items = [...(ORL_DATA.pick_mistakes || [])].sort(() => Math.random() - 0.5).slice(0, 10);
+    this.current = 0; this.score = 0;
+    document.getElementById('pm-start').classList.add('hidden');
+    document.getElementById('pm-result').classList.add('hidden');
+    document.getElementById('pm-game').classList.remove('hidden');
+    this.render();
+  },
+
+  render() {
+    if (this.current >= this.items.length) { this.finish(); return; }
+    const item = this.items[this.current];
+    document.getElementById('pm-progress').textContent = `${this.current + 1} / ${this.items.length}`;
+    document.getElementById('pm-score').textContent = `${this.score} pts`;
+    document.getElementById('pm-topic').textContent = item.topic;
+    document.getElementById('pm-feedback').classList.add('hidden');
+    document.getElementById('pm-next-btn').classList.add('hidden');
+
+    // Build statement with clickable mistake segment
+    const stmt = item.statement;
+    const mistakeText = item.mistake;
+    const idx = stmt.indexOf(mistakeText);
+
+    const el = document.getElementById('pm-statement');
+    el.innerHTML = '';
+
+    if (idx >= 0) {
+      // Split into segments: before, mistake, after
+      const parts = [];
+      if (idx > 0) parts.push({ text: stmt.substring(0, idx), isMistake: false });
+      parts.push({ text: mistakeText, isMistake: true });
+      const afterIdx = idx + mistakeText.length;
+      if (afterIdx < stmt.length) parts.push({ text: stmt.substring(afterIdx), isMistake: false });
+
+      // Also create some decoy clickable segments from the correct parts
+      const allSegments = [];
+      parts.forEach(p => {
+        if (p.isMistake) {
+          allSegments.push(p);
+        } else {
+          // Split non-mistake into phrases for clicking
+          const words = p.text.split(/(?<=\s)/);
+          let chunk = '';
+          words.forEach(w => {
+            chunk += w;
+            if (chunk.length > 20 || w.endsWith('. ') || w.endsWith(', ')) {
+              allSegments.push({ text: chunk, isMistake: false });
+              chunk = '';
+            }
+          });
+          if (chunk) allSegments.push({ text: chunk, isMistake: false });
+        }
+      });
+
+      allSegments.forEach(seg => {
+        const span = document.createElement('span');
+        span.textContent = seg.text;
+        span.className = 'pm-segment';
+        span.addEventListener('click', () => this.select(seg.isMistake, span, item));
+        el.appendChild(span);
+      });
+    } else {
+      el.textContent = stmt;
+    }
+  },
+
+  select(isMistake, span, item) {
+    // Disable all segments
+    document.querySelectorAll('.pm-segment').forEach(s => {
+      s.style.pointerEvents = 'none';
+    });
+
+    if (isMistake) {
+      this.score++;
+      span.classList.add('pm-correct-pick');
+    } else {
+      span.classList.add('pm-wrong-pick');
+      // Highlight the real mistake
+      document.querySelectorAll('.pm-segment').forEach(s => {
+        if (s.textContent === item.mistake) s.classList.add('pm-correct-pick');
+      });
+    }
+
+    const fb = document.getElementById('pm-feedback');
+    fb.className = isMistake ? 'surv-fb-correct' : 'surv-fb-wrong';
+    fb.innerHTML = `<strong>${isMistake ? '✅ Correct!' : '❌ Missed it!'}</strong> ${item.correction}`;
+    fb.classList.remove('hidden');
+    document.getElementById('pm-next-btn').classList.remove('hidden');
+    document.getElementById('pm-score').textContent = `${this.score} pts`;
+  },
+
+  next() {
+    this.current++;
+    this.render();
+  },
+
+  finish() {
+    document.getElementById('pm-game').classList.add('hidden');
+    document.getElementById('pm-result').classList.remove('hidden');
+    const pct = Math.round((this.score / this.items.length) * 100);
+    document.getElementById('pm-result-emoji').textContent = pct >= 80 ? '🏆' : pct >= 50 ? '🔍' : '📚';
+    document.getElementById('pm-result-score').textContent = `${this.score} / ${this.items.length}`;
+    document.getElementById('pm-result-detail').textContent = `${pct}% mistakes found`;
+  }
+};
+
+// ── MATCHING GAME (Pass the River) ──────────────────────────────────
+const MatchGame = {
+  sets: [],
+  currentSet: null,
+  selectedLeft: null,
+  matched: 0,
+  pairs: [],
+
+  init() {
+    this.sets = ORL_DATA.matching_sets || [];
+    this.renderSetList();
+  },
+
+  renderSetList() {
+    const list = document.getElementById('match-set-list');
+    if (!list) return;
+    list.innerHTML = '';
+    this.sets.forEach((set, idx) => {
+      const btn = document.createElement('div');
+      btn.className = 'rot-card-item';
+      btn.innerHTML = `
+        <div class="rot-card-icon">${set.icon}</div>
+        <div class="rot-card-info">
+          <div class="rot-card-title">${set.title}</div>
+          <div class="rot-card-desc">${set.pairs.length} pairs to match</div>
+        </div>
+        <div style="color:var(--text-hint); font-size:18px;">›</div>
+      `;
+      btn.addEventListener('click', () => this.startSet(idx));
+      list.appendChild(btn);
+    });
+  },
+
+  startSet(idx) {
+    this.currentSet = this.sets[idx];
+    this.matched = 0;
+    this.selectedLeft = null;
+    this.pairs = [...this.currentSet.pairs];
+
+    document.getElementById('match-start').classList.add('hidden');
+    document.getElementById('match-game').classList.remove('hidden');
+    document.getElementById('match-result-msg').classList.add('hidden');
+    document.getElementById('match-title').textContent = this.currentSet.title;
+    this.renderBoard();
+  },
+
+  renderBoard() {
+    document.getElementById('match-score').textContent = `${this.matched} / ${this.pairs.length}`;
+
+    // Shuffle both columns independently
+    const leftOrder = [...this.pairs].sort(() => Math.random() - 0.5);
+    const rightOrder = [...this.pairs].sort(() => Math.random() - 0.5);
+
+    const leftEl = document.getElementById('match-left');
+    const rightEl = document.getElementById('match-right');
+    leftEl.innerHTML = '<div style="font-size:11px; font-weight:700; color:var(--teal); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Tap to select ↓</div>';
+    rightEl.innerHTML = '<div style="font-size:11px; font-weight:700; color:var(--text-hint); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Then tap the match ↓</div>';
+
+    leftOrder.forEach((pair, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'match-btn match-left-btn';
+      btn.textContent = pair.left;
+      btn.dataset.idx = this.pairs.indexOf(pair);
+      btn.addEventListener('click', () => this.selectLeft(btn));
+      leftEl.appendChild(btn);
+    });
+
+    rightOrder.forEach((pair, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'match-btn match-right-btn';
+      btn.textContent = pair.right;
+      btn.dataset.idx = this.pairs.indexOf(pair);
+      btn.addEventListener('click', () => this.selectRight(btn));
+      rightEl.appendChild(btn);
+    });
+  },
+
+  selectLeft(btn) {
+    document.querySelectorAll('.match-left-btn').forEach(b => b.classList.remove('match-selected'));
+    btn.classList.add('match-selected');
+    this.selectedLeft = parseInt(btn.dataset.idx);
+  },
+
+  selectRight(btn) {
+    if (this.selectedLeft === null) return;
+    const rightIdx = parseInt(btn.dataset.idx);
+
+    if (this.selectedLeft === rightIdx) {
+      // Correct match!
+      this.matched++;
+      // Mark both as matched
+      const leftBtn = document.querySelector(`.match-left-btn[data-idx="${this.selectedLeft}"]`);
+      if (leftBtn) { leftBtn.classList.add('match-done'); leftBtn.disabled = true; }
+      btn.classList.add('match-done'); btn.disabled = true;
+      haptic('medium');
+    } else {
+      // Wrong
+      btn.classList.add('match-wrong');
+      setTimeout(() => btn.classList.remove('match-wrong'), 600);
+      haptic('heavy');
+    }
+
+    this.selectedLeft = null;
+    document.querySelectorAll('.match-left-btn').forEach(b => b.classList.remove('match-selected'));
+    document.getElementById('match-score').textContent = `${this.matched} / ${this.pairs.length}`;
+
+    if (this.matched === this.pairs.length) {
+      setTimeout(() => {
+        document.getElementById('match-result-msg').classList.remove('hidden');
+      }, 500);
+    }
+  },
+
+  backToList() {
+    document.getElementById('match-start').classList.remove('hidden');
+    document.getElementById('match-game').classList.add('hidden');
+    this.renderSetList();
+  }
+};
+
 // ── Init ──────────────────────────────────────────────────────────────
 async function init() {
   const user = await authenticate();
@@ -1662,7 +2467,7 @@ async function init() {
 
   // Handle hash routing
   const hash = location.hash.replace('#', '') || 'home';
-  if (['home', 'exam', 'cards', 'course', 'cases', 'trivia', 'action'].includes(hash)) {
+  if (['home', 'exam', 'cards', 'course', 'cases', 'trivia', 'action', 'actioncards', 'highyield', 'rotation', 'swipe', 'survive', 'pickmistake', 'matching'].includes(hash)) {
     showSection(hash);
   } else {
     showSection('home');
@@ -1681,6 +2486,11 @@ async function init() {
   await Course.init();
   await Trivia.init();
   await Cases.init();
+  ActionCards.init();
+  HighYield.init();
+  Rotation.init();
+  SurviveGame.showStart();
+  MatchGame.init();
 
   // Flashcard swipe
   const flashcardEl = document.getElementById('flashcard');
