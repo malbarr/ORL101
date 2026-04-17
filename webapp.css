@@ -1726,6 +1726,7 @@ body {
   padding: 6px 0; border-bottom: 1px solid #FDE68A;
 }
 .ac-trap:last-child { border-bottom: none; }
+.ac-snapshot{border-radius:12px;overflow:hidden;margin-bottom:16px;border:1px solid var(--border)}.ac-snap-header{display:grid;grid-template-columns:1fr 1fr;background:var(--primary);color:#fff;font-weight:700;font-size:12px}.ac-snap-col-see,.ac-snap-col-do{padding:8px 12px}.ac-snap-col-do{border-left:1px solid rgba(255,255,255,.3)}.ac-snap-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)}.ac-snap-row:last-child{border-bottom:none}.ac-snap-see{padding:10px 12px;font-size:13px;color:var(--text-secondary);background:var(--surface)}.ac-snap-do{padding:10px 12px;font-size:13px;font-weight:600;color:var(--text);border-left:1px solid var(--border)}.ac-snap-row.urgent .ac-snap-see{background:#FFF5F5;color:#C53030}.ac-snap-row.urgent .ac-snap-do{background:#FFF5F5;color:#C53030;font-weight:700}
 
 /* ══════════════════════════════════════════════════════════════════════
    HIGH YIELD — Key Bullets
