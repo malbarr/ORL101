@@ -1883,7 +1883,7 @@ const ActionCards = {
         <div class="ac-card-emoji">${card.emoji}</div>
         <div class="ac-card-info">
           <div class="ac-card-title">${card.title}</div>
-          <div class="ac-card-meta">${card.actions.length} actions · ${card.traps.length} exam traps</div>
+          <div class="ac-card-meta">${card.steps.length} steps</div>
         </div>
         <div style="color:var(--text-hint); font-size:18px;">›</div>
       `;
