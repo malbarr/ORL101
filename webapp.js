@@ -826,7 +826,7 @@ const Course = {
     document.getElementById('chapter-key-points').classList.add('hidden');
 
     try {
-      const subtopics = Promise.resolve((ORL_DATA.subtopics||[]).filter(s=>s.chapter_id==ch.id));
+      const subtopics = (ORL_DATA.subtopics||[]).filter(s=>s.chapter_id==ch.id);
       this.subtopics = subtopics;
       this.renderSubTopicList(subtopics);
       this.renderKeyPoints(subtopics);
