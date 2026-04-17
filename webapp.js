@@ -1957,7 +1957,7 @@ const HighYield = {
     if (!card) return;
     document.getElementById('hy-list').classList.add('hidden');
     document.getElementById('hy-detail').classList.remove('hidden');
-    document.getElementById('hy-detail-title').textContent = card.title;
+    document.getElementById('hy-detail-title').textContent = card.chapter_title;
 
     let html = '<div class="hy-bullets">';
     card.points.forEach(b => {
