@@ -1900,7 +1900,7 @@ const ActionCards = {
     document.getElementById('ac-detail-title').textContent = `${card.emoji} ${card.title}`;
 
     let html = '<div class="ac-actions">';
-    card.actions.forEach(a => {
+    (card.steps||[]).forEach(a => {
       const cls = a.urgent ? 'ac-action urgent' : 'ac-action';
       html += `<div class="${cls}">
         <div class="ac-see">${a.urgent ? '🚨' : '👁'} ${a.see}</div>
@@ -1910,9 +1910,9 @@ const ActionCards = {
     });
     html += '</div>';
 
-    if (card.traps && card.traps.length) {
+    if (card.danger) {
       html += '<div class="ac-traps-box"><div class="ac-traps-title">🧪 Exam Traps</div>';
-      card.traps.forEach(t => {
+      [card.danger].forEach(t => {
         html += `<div class="ac-trap">⚡ ${t}</div>`;
       });
       html += '</div>';
