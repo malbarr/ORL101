@@ -973,6 +973,14 @@ const Course = {
     if (navigator.share) { navigator.share({title: item.title, text: text}); }
     else { navigator.clipboard.writeText(text).then(function(){ alert('Copied to clipboard!'); }); }
   },
+  shareItem() {
+    const item = Rotation._currentItem;
+    if (!item) return;
+    var text = item.icon+' '+item.title+'\n\n';
+    (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
+    if (navigator.share) { navigator.share({title: item.title, text: text}); }
+    else { navigator.clipboard.writeText(text).then(function(){ alert('Copied!'); }); }
+  },
   backToList() {
     document.getElementById('course-list-view').classList.remove('hidden');
     document.getElementById('course-chapter-view').classList.add('hidden');
@@ -1854,6 +1862,14 @@ const Cases = {
     if (navigator.share) { navigator.share({title: item.title, text: text}); }
     else { navigator.clipboard.writeText(text).then(function(){ alert('Copied to clipboard!'); }); }
   },
+  shareItem() {
+    const item = Rotation._currentItem;
+    if (!item) return;
+    var text = item.icon+' '+item.title+'\n\n';
+    (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
+    if (navigator.share) { navigator.share({title: item.title, text: text}); }
+    else { navigator.clipboard.writeText(text).then(function(){ alert('Copied!'); }); }
+  },
   backToList() {
     this.stopTimer();
     this.ended = true;
@@ -1947,6 +1963,14 @@ const ActionCards = {
     if (navigator.share) { navigator.share({title: item.title, text: text}); }
     else { navigator.clipboard.writeText(text).then(function(){ alert('Copied to clipboard!'); }); }
   },
+  shareItem() {
+    const item = Rotation._currentItem;
+    if (!item) return;
+    var text = item.icon+' '+item.title+'\n\n';
+    (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
+    if (navigator.share) { navigator.share({title: item.title, text: text}); }
+    else { navigator.clipboard.writeText(text).then(function(){ alert('Copied!'); }); }
+  },
   backToList() {
     document.getElementById('ac-list').classList.remove('hidden');
     document.getElementById('ac-detail').classList.add('hidden');
@@ -2006,6 +2030,14 @@ const HighYield = {
     if (navigator.share) { navigator.share({title: item.title, text: text}); }
     else { navigator.clipboard.writeText(text).then(function(){ alert('Copied to clipboard!'); }); }
   },
+  shareItem() {
+    const item = Rotation._currentItem;
+    if (!item) return;
+    var text = item.icon+' '+item.title+'\n\n';
+    (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
+    if (navigator.share) { navigator.share({title: item.title, text: text}); }
+    else { navigator.clipboard.writeText(text).then(function(){ alert('Copied!'); }); }
+  },
   backToList() {
     document.getElementById('hy-list').classList.remove('hidden');
     document.getElementById('hy-detail').classList.add('hidden');
@@ -2053,6 +2085,14 @@ const Rotation = {
     (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
     if (navigator.share) { navigator.share({title: item.title, text: text}); }
     else { navigator.clipboard.writeText(text).then(function(){ alert('Copied to clipboard!'); }); }
+  },
+  shareItem() {
+    const item = Rotation._currentItem;
+    if (!item) return;
+    var text = item.icon+' '+item.title+'\n\n';
+    (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
+    if (navigator.share) { navigator.share({title: item.title, text: text}); }
+    else { navigator.clipboard.writeText(text).then(function(){ alert('Copied!'); }); }
   },
   backToList() {
     document.getElementById('rot-list').classList.remove('hidden');
@@ -2466,6 +2506,14 @@ const MatchGame = {
     (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
     if (navigator.share) { navigator.share({title: item.title, text: text}); }
     else { navigator.clipboard.writeText(text).then(function(){ alert('Copied to clipboard!'); }); }
+  },
+  shareItem() {
+    const item = Rotation._currentItem;
+    if (!item) return;
+    var text = item.icon+' '+item.title+'\n\n';
+    (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
+    if (navigator.share) { navigator.share({title: item.title, text: text}); }
+    else { navigator.clipboard.writeText(text).then(function(){ alert('Copied!'); }); }
   },
   backToList() {
     document.getElementById('match-start').classList.remove('hidden');
