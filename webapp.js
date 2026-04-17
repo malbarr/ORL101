@@ -1995,7 +1995,7 @@ const Rotation = {
         <div class="rot-card-icon">${item.icon}</div>
         <div class="rot-card-info">
           <div class="rot-card-title">${item.title}</div>
-          <div class="rot-card-desc">${item.desc}</div>
+          <div class="rot-card-desc">${(item.items||[]).length} sections</div>
         </div>
         <div style="color:var(--text-hint); font-size:18px;">›</div>
       `;
@@ -2010,7 +2010,7 @@ const Rotation = {
     document.getElementById('rot-list').classList.add('hidden');
     document.getElementById('rot-detail').classList.remove('hidden');
     document.getElementById('rot-detail-title').textContent = `${item.icon} ${item.title}`;
-    document.getElementById('rot-content-body').innerHTML = renderWikiContent(item.content || '');
+    var h='';(item.items||[]).forEach(function(s){h+='<div class="rot-section"><div class="rot-section-title">'+s.subtitle+'</div><pre class="rot-content">'+s.content+'</pre></div>';});document.getElementById('rot-content-body').innerHTML=h;
     document.getElementById('rot-detail-content').scrollTop = 0;
   },
 
