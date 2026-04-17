@@ -344,7 +344,7 @@ function initHome(user) {
   document.querySelectorAll('.mode-card[data-mode]').forEach(card => {
     card.addEventListener('click', () => {
       haptic('light');
-      showSection(card.dataset.mode);
+      card.dataset.mode==='search'?Chat.open():showSection(card.dataset.mode);
     });
   });
 }
