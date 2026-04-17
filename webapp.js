@@ -1942,7 +1942,7 @@ const HighYield = {
       el.innerHTML = `
         <div class="hy-card-num">Ch.${card.chapter_id}</div>
         <div class="hy-card-info">
-          <div class="hy-card-title">${card.title.replace(/^Ch\.\d+\s*/, '')}</div>
+          <div class="hy-card-title">${card.chapter_title}</div>
           <div class="hy-card-meta">${card.points.length} key points</div>
         </div>
         <div style="color:var(--text-hint); font-size:18px;">›</div>
