@@ -1294,7 +1294,7 @@ const Chat = {
     if (id) wrap.id = id;
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble';
-    bubble.textContent = text;
+    bubble.innerHTML = text;
     wrap.appendChild(bubble);
     container.appendChild(wrap);
     container.scrollTop = container.scrollHeight;
