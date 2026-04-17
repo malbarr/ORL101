@@ -1,0 +1,38 @@
+import json
+
+PICK_MISTAKES = [
+  {"topic":"Acute Mastoiditis","scenario":"A 7-year-old presents with fever and otalgia for 3 days. Diagnosed with acute otitis media. Prescribed oral amoxicillin and discharged home. Returns next day with post-auricular swelling and displaced auricle.","mistake":"discharged home","correction":"Admit immediately for IV antibiotics and urgent CT temporal bones","explanation":"Post-auricular swelling and displaced auricle means mastoiditis. Discharge risks intracranial spread."},
+  {"topic":"Epiglottitis","scenario":"A 4-year-old presents with drooling, muffled voice, and stridor. The doctor performs a tongue depressor examination to visualize the throat. Child rapidly deteriorates in the clinic.","mistake":"performs a tongue depressor examination","correction":"Do NOT examine the throat. Call anaesthetics immediately and secure airway in theatre","explanation":"Tongue depressor in epiglottitis can trigger laryngospasm and complete airway obstruction."},
+  {"topic":"Peritonsillar Abscess","scenario":"A 22-year-old presents with trismus, hot potato voice, and uvular deviation. Given IV antibiotics only and admitted to the ward. No improvement after 48 hours.","mistake":"Given IV antibiotics only","correction":"Peritonsillar abscess requires drainage — needle aspiration or incision and drainage","explanation":"Antibiotics alone will not drain an abscess. I&D is the definitive treatment."},
+  {"topic":"JNA Biopsy","scenario":"A 16-year-old male presents with recurrent unilateral epistaxis and nasal obstruction. A nasal mass is visualized. The doctor performs a biopsy in the clinic to confirm diagnosis.","mistake":"performs a biopsy in the clinic","correction":"Never biopsy a vascular nasal mass blindly. Order CT/MRI first — likely JNA","explanation":"JNA is highly vascular. Blind biopsy can cause catastrophic haemorrhage."},
+  {"topic":"Foreign Body Airway","scenario":"A 2-year-old suddenly chokes while eating peanuts. CXR shows hyperinflation of the left lung. Diagnosed with pneumonia and started on antibiotics. Child returns 2 weeks later with worsening symptoms.","mistake":"Diagnosed with pneumonia and started on antibiotics","correction":"Unilateral hyperinflation after choking means foreign body. Urgent bronchoscopy required","explanation":"Unilateral air trapping after witnessed choking is foreign body until proven otherwise."},
+  {"topic":"Sudden SNHL","scenario":"A 45-year-old wakes up with sudden unilateral hearing loss. GP prescribes antihistamines and asks patient to return in 4 weeks if not improved.","mistake":"asks patient to return in 4 weeks","correction":"Sudden SNHL is an emergency. Start high-dose steroids within 72 hours for best prognosis","explanation":"Delay beyond 72 hours significantly worsens hearing recovery outcomes."},
+  {"topic":"Caustic Ingestion","scenario":"A 3-year-old swallows a household cleaning agent. The nurse induces vomiting to clear the substance. Child develops severe respiratory distress.","mistake":"induces vomiting","correction":"Never induce vomiting after caustic ingestion — it causes re-injury on the way up","explanation":"Re-exposure of oesophageal mucosa to caustic agent during vomiting worsens injury."},
+  {"topic":"Deep Space Neck Infection","scenario":"A 35-year-old diabetic presents with odynophagia, neck swelling, and fever for 5 days. Treated with oral antibiotics as outpatient. Returns 2 days later with stridor and septic shock.","mistake":"Treated with oral antibiotics as outpatient","correction":"Admit immediately. IV antibiotics, urgent CT neck, surgical drainage if abscess","explanation":"Deep space neck infections in diabetics can spread rapidly to mediastinum — mortality risk."},
+  {"topic":"CSF Rhinorrhoea","scenario":"A patient presents with clear unilateral nasal discharge after a head injury. ENT doctor prescribes nasal decongestant spray and tells patient to blow their nose forcefully to clear the fluid.","mistake":"blow their nose forcefully","correction":"CSF leak — no nose blowing. Bed rest, neurosurgery referral, consider prophylactic antibiotics","explanation":"Forceful nose blowing increases intracranial pressure and risks pneumocephalus or meningitis."},
+  {"topic":"Laryngeal Trauma","scenario":"A motorcyclist sustains neck trauma. In the ED, a junior doctor attempts orotracheal intubation due to increasing stridor. Voice becomes absent after the attempt.","mistake":"attempts orotracheal intubation","correction":"Laryngeal trauma with stridor — call ENT and anaesthetics. Tracheotomy may be needed","explanation":"Blind intubation in laryngeal fracture can complete an incomplete tear and lose the airway."},
+  {"topic":"Cholesteatoma","scenario":"A 40-year-old presents with chronic ear discharge and conductive hearing loss. Diagnosed with chronic suppurative otitis media and given topical ear drops. Returns 6 months later with facial nerve palsy.","mistake":"given topical ear drops","correction":"Attic perforation with granulation tissue — suspect cholesteatoma. Requires CT and surgery","explanation":"Cholesteatoma is locally destructive. Medical treatment alone allows it to erode facial nerve canal."},
+  {"topic":"ACE Inhibitor Angioedema","scenario":"A patient develops rapid tongue swelling and throat tightening after starting an ACE inhibitor. The doctor orders antihistamines and observes the patient for 30 minutes before discharge.","mistake":"observes the patient for 30 minutes before discharge","correction":"ACE inhibitor angioedema can progress rapidly. Admit, IV adrenaline, airway management ready","explanation":"Angioedema can progress to complete airway obstruction unpredictably. Short observation is dangerous."},
+  {"topic":"Nasal Fracture","scenario":"A patient sustains a punch to the nose. Significant swelling is noted. The doctor performs nasal manipulation and reduction immediately in the ED.","mistake":"performs nasal manipulation and reduction immediately","correction":"Wait 5-7 days for swelling to subside before closed reduction for accurate assessment","explanation":"Immediate reduction is inaccurate due to oedema. Optimal timing is 5-10 days post-injury."},
+  {"topic":"Septal Haematoma","scenario":"A 19-year-old sustains nasal trauma. On examination there is a soft bulging of the nasal septum bilaterally. Doctor prescribes NSAIDs and reviews in outpatient clinic in 2 weeks.","mistake":"reviews in outpatient clinic in 2 weeks","correction":"Septal haematoma must be drained urgently to prevent avascular necrosis and saddle nose deformity","explanation":"Cartilage derives nutrition from overlying perichondrium. Haematoma causes avascular necrosis within days."},
+  {"topic":"Button Battery","scenario":"A 2-year-old is brought with drooling and refusal to eat. Parents mention the child was playing with a remote control. CXR shows a circular opacity. Given PPI and discharged to follow up in 48 hours.","mistake":"discharged to follow up in 48 hours","correction":"Button battery in oesophagus is an emergency. Urgent endoscopic removal within 2 hours","explanation":"Button battery causes liquefactive necrosis within 2 hours. Can erode into aorta — fatal."}
+]
+
+c = open("data.js").read()
+start = c.find('"pick_mistakes"')
+if start == -1:
+    print("Key not found"); exit()
+bracket = c.find('[', start)
+depth = 0
+end = bracket
+for i in range(bracket, len(c)):
+    if c[i] == '[': depth += 1
+    elif c[i] == ']':
+        depth -= 1
+        if depth == 0:
+            end = i
+            break
+new_data = json.dumps(PICK_MISTAKES, ensure_ascii=False, separators=(',',':'))
+c = c[:bracket] + new_data + c[end+1:]
+open("data.js","w").write(c)
+print("Done:", len(PICK_MISTAKES), "items")
