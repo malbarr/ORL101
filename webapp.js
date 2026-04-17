@@ -287,7 +287,7 @@ function showSection(id) {
 }
 
 navItems.forEach(item => {
-  item.addEventListener('click', () => showSection(item.dataset.section));
+  item.addEventListener('click', function(){if(this.dataset.section) showSection(this.dataset.section);});
 });
 
 window.addEventListener('popstate', e => {
