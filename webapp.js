@@ -1932,7 +1932,7 @@ const ActionCards = {
 // ── HIGH YIELD ───────────────────────────────────────────────────────
 const HighYield = {
   init() {
-    const cards = ORL_DATA.high_yield || [];
+    const cards = (ORL_DATA.high_yield || []).slice().sort((a,b)=>a.chapter_id-b.chapter_id);
     const list = document.getElementById('hy-list');
     if (!list || !cards.length) return;
     list.innerHTML = '';
