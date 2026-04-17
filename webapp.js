@@ -276,6 +276,7 @@ async function authenticate() {
 const sections = document.querySelectorAll('.section');
 const navItems = document.querySelectorAll('.nav-item');
 
+function toggleSub(id,card){var s=document.getElementById(id);var a=card.querySelector(".hm-arrow");if(!s)return;if(s.classList.contains("hidden")){s.classList.remove("hidden");if(a)a.classList.add("open");}else{s.classList.add("hidden");if(a)a.classList.remove("open");}}
 function showSection(id) {
   sections.forEach(s => s.classList.toggle('active', s.id === id));
   navItems.forEach(n => n.classList.toggle('active', n.dataset.section === id));
