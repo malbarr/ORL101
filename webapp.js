@@ -938,8 +938,9 @@ const Course = {
           contentEl.innerHTML = renderWikiContent(data.content || '');
         }
       } else {
-        // Detailed Mode: full wiki content
-        contentEl.innerHTML = renderWikiContent(data.content || '');
+        // Detailed Mode: full wiki content + quick button
+        const quickBtn = '<div style="margin-bottom:12px;display:flex;justify-content:flex-end;"><button onclick="Course.mode=\'quick\';localStorage.setItem(\'orl101_course_mode\',\'quick\');document.querySelectorAll(\'.course-mode-btn\').forEach(b=>b.classList.toggle(\'active\',b.dataset.mode===\'quick\'));Course.openSubTopic(Course.currentSubTopicIndex);" style="padding:6px 14px;background:var(--card-bg);color:var(--teal);border:1px solid var(--teal);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;">⚡ Quick Review ←</button></div>';
+        contentEl.innerHTML = quickBtn + renderWikiContent(data.content || '');
       }
     } catch (e) {
       contentEl.innerHTML = '<p style="color:var(--red);">Failed to load content.</p>';
