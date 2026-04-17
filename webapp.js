@@ -2299,7 +2299,7 @@ const PickMistake = {
     document.getElementById('pm-next-btn').classList.add('hidden');
 
     // Build statement with clickable mistake segment
-    const stmt = item.statement;
+    const stmt = item.scenario || item.statement || "";
     const mistakeText = item.mistake;
     const idx = stmt.indexOf(mistakeText);
 
