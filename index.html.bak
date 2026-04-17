@@ -2,7 +2,6 @@
 <html lang="en" dir="auto">
 <head>
   <meta charset="UTF-8">
-  <meta name="author" content="Dr. Mohammad H. Al-Bar">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>ORL101 — ENT for Primary Care</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -154,11 +153,11 @@
     </div>
   </div>
 
-  <!-- Search button -->
+  <!-- Ask the Book button -->
   <div class="p-16" style="padding-top:0;">
     <button class="btn ask-book-btn btn-full" onclick="Chat.open()">
       <span style="font-size:20px;">💬</span>
-      <span>Search</span>
+      <span>Ask the Book</span>
       <span style="font-size:11px; opacity:0.75; margin-left:auto;">Search the textbook</span>
     </button>
   </div>
@@ -935,7 +934,7 @@
     <div class="chat-header">
       <button onclick="Chat.close()" class="chat-close-btn">✕</button>
       <div style="flex:1; text-align:center;">
-        <div style="font-size:16px; font-weight:800;">💬 Search</div>
+        <div style="font-size:16px; font-weight:800;">💬 Ask the Book</div>
         <div style="font-size:11px; opacity:0.8;">AI answers from your textbook only</div>
       </div>
       <div style="width:32px;"></div>
@@ -963,7 +962,82 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════ ROLE SELECTION MODAL ═════════════════ -->
+<div id="role-modal" class="modal-overlay hidden">
+  <div class="modal-sheet" style="max-height:90vh; overflow-y:auto;">
+    <div class="modal-handle"></div>
+    <div style="text-align:center; margin-bottom:20px;">
+      <div style="font-size:48px;">🏥</div>
+      <h2 style="font-size:20px; font-weight:800; margin:8px 0 4px;">Welcome to ORL 101</h2>
+      <p style="font-size:14px; color:var(--text-hint);">Please select your role to personalise your learning experience</p>
+    </div>
 
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <button class="role-option" data-role="doctor" onclick="Roles.select('doctor')">
+        <span class="role-icon">👨‍⚕️</span>
+        <div>
+          <div class="role-name">Doctor / Resident</div>
+          <div class="role-desc">Full access — all chapters unlocked</div>
+        </div>
+      </button>
+      <button class="role-option" data-role="student" onclick="Roles.select('student')">
+        <span class="role-icon">🎓</span>
+        <div>
+          <div class="role-name">Medical Student</div>
+          <div class="role-desc">Level-based access — beginner → advanced</div>
+        </div>
+      </button>
+      <button class="role-option" data-role="intern" onclick="Roles.select('intern')">
+        <span class="role-icon">🩺</span>
+        <div>
+          <div class="role-name">Intern</div>
+          <div class="role-desc">Level-based access — all levels included</div>
+        </div>
+      </button>
+      <button class="role-option" data-role="guest" onclick="Roles.select('guest')">
+        <span class="role-icon">👁️</span>
+        <div>
+          <div class="role-name">Guest (Preview)</div>
+          <div class="role-desc">View first 3 chapters only</div>
+        </div>
+      </button>
+    </div>
+    <p style="font-size:11px; color:var(--text-hint); text-align:center; margin-top:16px;">
+      You can contact the admin to change your role later.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ PRE-TEST MODAL ═══════════════════════ -->
+<div id="pretest-modal" class="modal-overlay hidden">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="text-align:center;">
+      <div style="font-size:48px;">📋</div>
+      <h2 style="font-size:18px; font-weight:800; margin:8px 0 4px;">Pre-Test</h2>
+      <p style="font-size:14px; color:var(--text-hint); line-height:1.6;">
+        Before you start, take a short <strong>25-question test</strong> to assess your baseline ENT knowledge.<br>
+        After completing the course, you'll take a post-test to measure your improvement.
+      </p>
+    </div>
+    <div style="background:var(--bg-secondary); border-radius:12px; padding:16px; margin:16px 0; font-size:13px; line-height:1.8;">
+      <div>⏱️ ~15 minutes</div>
+      <div>❓ 25 MCQs covering all chapters</div>
+      <div>📊 Results saved to compare with post-test</div>
+      <div>🏆 Pre-test score shown on your certificate</div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-secondary" style="flex:1;" onclick="closeModal('pretest-modal')">Skip for now</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="Tests.startPreTest()">Start Pre-Test →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TEST MODAL ═══════════════════════════ -->
+<div id="test-modal" class="modal-overlay hidden">
+  <div class="modal-sheet" style="max-height:90vh; overflow-y:auto;">
+    <div class="modal-handle"></div>
+    <!-- Test in progress -->
     <div id="test-quiz-wrap">
       <div class="quiz-container" style="padding:0;">
         <div class="question-progress">

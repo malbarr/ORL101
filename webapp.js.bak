@@ -14,8 +14,8 @@ function cleanContent(text) {
     .replace(/^\+[-+]+\+$/gm, '')
     .replace(/^[=+\-|]{4,}$/gm, '')
     .replace(/^\|[-:| ]+\|$/gm, (m) => m.match(/\|[\s]*[-:]+[\s]*\|/) ? m : '')
-    .replace(/[✍✎]\s*بالعربي[^\n]*/g, '')
-    .replace(/\*\*✍\s*بالعربي[^*]*\*\*/g, '')
+    .replace(/[✍✎]\s*من وحي القلم[^\n]*/g, '')
+    .replace(/\*\*✍\s*من وحي القلم[^*]*\*\*/g, '')
     .replace(/\s---\s/g, ' — ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
@@ -31,7 +31,7 @@ function renderWikiContent(raw) {
 
   let text = raw.replace(/\\'/g, "'").replace(/\\"/g, '"');
 
-  // ── 1. Extract "بالعربي" / voice boxes ──
+  // ── 1. Extract "من وحي القلم" / voice boxes ──
   const boxes = [];
   // Pattern: lines starting with | that form a block
   text = text.replace(
@@ -95,7 +95,7 @@ function renderWikiContent(raw) {
     if (!t) continue;
 
     // Placeholder: voice box
-    const boxM = t.match(/%BOX_(\d+)%/);
+    const boxM = t.match(/^%%BOX_(\d+)%%$/);
     if (boxM) {
       const b = boxes[parseInt(boxM[1])];
       const icon = b.title.match(/[✍✎]/) ? '✍' : b.title.match(/🔬/) ? '🔬' : b.title.match(/💡/) ? '💡' : b.title.match(/🚩/) ? '🚩' : '✍';
@@ -338,6 +338,7 @@ function initHome(user) {
   const greet = document.getElementById('user-greeting');
   if (greet && user) {
     const roleLabel = { admin: '⚙️ Admin', doctor: '👨‍⚕️ Doctor', student: '🎓 Student', intern: '🩺 Intern', guest: '👁️ Guest' };
+    const rl = user.role_set ? ` · ${roleLabel[user.role] || user.role}` : '';
     greet.textContent = `👋 Hello, ${user.first_name}!${rl}`;
   }
   // Mode cards
@@ -1239,7 +1240,7 @@ const Trivia = {
 };
 
 
-// ── AI CHAT (Search) ────────────────────────────────────────────
+// ── AI CHAT (Ask the Book) ────────────────────────────────────────────
 const Chat = {
   open() {
     document.getElementById('chat-modal')?.classList.remove('hidden');
@@ -1311,6 +1312,9 @@ const Roles = {
         body: JSON.stringify({ role }),
       });
       currentUser.role = role;
+      currentUser.role_set = true;
+      localStorage.setItem('orl101_user', JSON.stringify(currentUser));
+      closeModal('role-modal');
       showToast(`Role set: ${role}`, 'success');
       // Show pre-test if eligible
       if (role !== 'guest') {
@@ -1324,6 +1328,8 @@ const Roles = {
 };
 
 function showPretestModal() {
+  if (!currentUser || currentUser.pre_test_score != null) return;
+  openModal('pretest-modal');
 }
 
 function updateHomeUI() {
@@ -1332,12 +1338,16 @@ function updateHomeUI() {
   const levelWrap = document.getElementById('level-progress-wrap');
 
   if (pretestBanner) {
+    if (currentUser.role_set && currentUser.pre_test_score == null && currentUser.role !== 'guest') {
+      pretestBanner.classList.remove('hidden');
     } else {
       pretestBanner.classList.add('hidden');
     }
   }
 
   if (levelWrap) {
+    if (currentUser.role_set && currentUser.role !== 'guest') {
+      levelWrap.classList.remove('hidden');
       const level = currentUser.current_level || 'beginner';
       const badge = document.getElementById('current-level-badge');
       if (badge) {
@@ -1367,8 +1377,10 @@ const Tests = {
   answered: false,
 
   async startPreTest() {
+    closeModal('pretest-modal');
     try {
       const data = await apiFetch('/api/test/pre', { method: 'POST' });
+      this.mode = 'pre_test';
       this.session = data;
       this.questions = data.questions;
       this.current = 0;
@@ -2464,6 +2476,10 @@ async function init() {
   }
 
   // Show role selection modal on first open
+  if (user && !user.role_set) {
+    setTimeout(() => openModal('role-modal'), 600);
+  } else if (user && user.role !== 'guest' && user.pre_test_score == null) {
+    // Role set but pre-test not taken — show banner (already done by updateHomeUI)
   }
 
   // Init all sections
