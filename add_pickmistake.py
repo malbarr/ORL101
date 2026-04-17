@@ -1,4 +1,4 @@
-import json
+import json, re
 
 PICK_MISTAKES = [
   {
@@ -17,13 +17,13 @@ PICK_MISTAKES = [
   },
   {
     "topic": "Peritonsillar Abscess",
-    "scenario": "A 22-year-old presents with trismus, hot potato voice, and uvular deviation to the left. Given IV antibiotics only and admitted to the ward. No improvement after 48 hours.",
+    "scenario": "A 22-year-old presents with trismus, hot potato voice, and uvular deviation. Given IV antibiotics only and admitted to the ward. No improvement after 48 hours.",
     "mistake": "Given IV antibiotics only",
     "correction": "Peritonsillar abscess requires drainage — needle aspiration or incision and drainage",
     "explanation": "Antibiotics alone will not drain an abscess. I&D is the definitive treatment."
   },
   {
-    "topic": "Epistaxis - JNA",
+    "topic": "JNA Biopsy",
     "scenario": "A 16-year-old male presents with recurrent unilateral epistaxis and nasal obstruction. A nasal mass is visualized. The doctor performs a biopsy in the clinic to confirm diagnosis.",
     "mistake": "performs a biopsy in the clinic",
     "correction": "Never biopsy a vascular nasal mass blindly. Order CT/MRI first — likely JNA",
@@ -37,7 +37,7 @@ PICK_MISTAKES = [
     "explanation": "Unilateral air trapping after witnessed choking is foreign body until proven otherwise."
   },
   {
-    "topic": "Sudden Sensorineural Hearing Loss",
+    "topic": "Sudden SNHL",
     "scenario": "A 45-year-old wakes up with sudden unilateral hearing loss. GP prescribes antihistamines and asks patient to return in 4 weeks if not improved.",
     "mistake": "asks patient to return in 4 weeks",
     "correction": "Sudden SNHL is an emergency. Start high-dose steroids within 72 hours for best prognosis",
@@ -79,7 +79,7 @@ PICK_MISTAKES = [
     "explanation": "Cholesteatoma is locally destructive. Medical treatment alone allows it to erode facial nerve canal."
   },
   {
-    "topic": "Anaphylaxis - Angioedema",
+    "topic": "ACE Inhibitor Angioedema",
     "scenario": "A patient develops rapid tongue swelling and throat tightening after starting an ACE inhibitor. The doctor orders antihistamines and observes the patient for 30 minutes before discharge.",
     "mistake": "observes the patient for 30 minutes before discharge",
     "correction": "ACE inhibitor angioedema can progress rapidly. Admit, IV adrenaline, airway management ready",
@@ -109,17 +109,6 @@ PICK_MISTAKES = [
 ]
 
 c = open("data.js").read()
-if '"pick_mistakes"' not in c:
-    new_data = json.dumps(PICK_MISTAKES, ensure_ascii=False)
-    insert_str = f',\n  "pick_mistakes": {new_data}'
-    pos = c.rfind('};')
-    if pos == -1:
-        pos = c.rfind('}')
-    c = c[:pos] + insert_str + '\n' + c[pos:]
-else:
-    # Replace existing empty array
-    import re
-    c = re.sub(r'"pick_mistakes"\s*:\s*\[\s*\]', f'"pick_mistakes": {json.dumps(PICK_MISTAKES, ensure_ascii=False)}', c)
-
+c = re.sub(r'"pick_mistakes"\s*:\s*\[.*?\]', '"pick_mistakes": ' + json.dumps(PICK_MISTAKES, ensure_ascii=False), c, flags=re.S)
 open("data.js", "w").write(c)
 print("Done:", len(PICK_MISTAKES), "scenarios")
