@@ -1269,13 +1269,13 @@ const Chat = {
       const q=question.toLowerCase();
       const hits=[];
       (ORL_DATA.chapters||[]).forEach(ch=>{
-        if((ch.title||'').toLowerCase().includes(q)) hits.push('Ch.'+ch.number+': '+ch.title);
+        if((ch.title||'').toLowerCase().includes(q)) hits.push({id:ch.id,label:'Ch.'+ch.number+': '+ch.title});
       });
       (ORL_DATA.high_yield||[]).forEach(hy=>{
-        (hy.points||[]).forEach(pt=>{ if(pt.toLowerCase().includes(q)) hits.push('• '+pt); });
+        (hy.points||[]).forEach(pt=>{ if(pt.toLowerCase().includes(q)) hits.push({id:0,label:pt}); });
       });
       document.getElementById(typingId)?.remove();
-      const ans=hits.length?hits.slice(0,6).join('\n'):'No results for: '+question;
+      const ans=hits.length?hits.slice(0,8).map(h=>h.id?'<a href="#" onclick="Chat.close();Course.openChapter('+h.id+');return false;" style="display:block;padding:5px 2px;color:var(--primary)">📖 '+h.label+'</a>':'<div>• '+h.label+'</div>').join(''):'<em>No results for: '+question+'</em>';
       this._addMessage(ans,'ai');
     } catch (e) {
       document.getElementById(typingId)?.remove();
