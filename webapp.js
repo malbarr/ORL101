@@ -721,8 +721,8 @@ const Course = {
       document.getElementById('course-list').classList.add('hidden');
 
       const [chapters, prog] = await Promise.all([
-        apiFetch('/api/chapters/accessible').catch(() => apiFetch('/api/chapters')),
-        apiFetch('/api/course/progress').catch(() => ({ chapters: [], overall_percent: 0 })),
+        Promise.resolve(ORL_DATA.chapters||[]),
+        Promise.resolve({chapters:[],overall_percent:0}),
       ]);
       this.chapters = chapters;
 
