@@ -1953,7 +1953,7 @@ const HighYield = {
   },
 
   openCard(idx) {
-    const card = (ORL_DATA.high_yield || [])[idx];
+    const _hy=(ORL_DATA.high_yield||[]).slice().sort((a,b)=>a.chapter_id-b.chapter_id);const card=_hy[idx];
     if (!card) return;
     document.getElementById('hy-list').classList.add('hidden');
     document.getElementById('hy-detail').classList.remove('hidden');
