@@ -2314,7 +2314,7 @@ const MatchGame = {
   pairs: [],
 
   init() {
-    this.sets = ORL_DATA.matching_sets || [];
+    const raw=ORL_DATA.matching_sets||[];this.sets=raw.map(s=>({icon:"🧩",title:s.title,pairs:s.correct_pairs.map(p=>({left:s.left[p[0]],right:s.right[p[1]]}))  }));
     this.renderSetList();
   },
 
