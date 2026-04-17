@@ -1932,7 +1932,7 @@ const ActionCards = {
 // ── HIGH YIELD ───────────────────────────────────────────────────────
 const HighYield = {
   init() {
-    const cards = (ORL_DATA.high_yield || []).slice().sort((a,b)=>a.chapter_id-b.chapter_id);
+    const cards = (ORL_DATA.high_yield || []).slice().sort((a,b)=>parseInt(a.chapter_id)-parseInt(b.chapter_id));
     const list = document.getElementById('hy-list');
     if (!list || !cards.length) return;
     list.innerHTML = '';
@@ -1953,7 +1953,7 @@ const HighYield = {
   },
 
   openCard(idx) {
-    const _hy=(ORL_DATA.high_yield||[]).slice().sort((a,b)=>a.chapter_id-b.chapter_id);const card=_hy[idx];
+    const _hy=(ORL_DATA.high_yield||[]).slice().sort((a,b)=>parseInt(a.chapter_id)-parseInt(b.chapter_id));const card=_hy[idx];
     if (!card) return;
     document.getElementById('hy-list').classList.add('hidden');
     document.getElementById('hy-detail').classList.remove('hidden');
