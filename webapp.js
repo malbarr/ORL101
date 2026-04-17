@@ -965,6 +965,14 @@ const Course = {
     haptic('light');
   },
 
+  shareItem() {
+    const item = Rotation._currentItem;
+    if (!item) return;
+    var text = item.icon+' '+item.title+'\n\n';
+    (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
+    if (navigator.share) { navigator.share({title: item.title, text: text}); }
+    else { navigator.clipboard.writeText(text).then(function(){ alert('Copied to clipboard!'); }); }
+  },
   backToList() {
     document.getElementById('course-list-view').classList.remove('hidden');
     document.getElementById('course-chapter-view').classList.add('hidden');
@@ -1838,6 +1846,14 @@ const Cases = {
     document.getElementById('cases-scroll').scrollTop = 0;
   },
 
+  shareItem() {
+    const item = Rotation._currentItem;
+    if (!item) return;
+    var text = item.icon+' '+item.title+'\n\n';
+    (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
+    if (navigator.share) { navigator.share({title: item.title, text: text}); }
+    else { navigator.clipboard.writeText(text).then(function(){ alert('Copied to clipboard!'); }); }
+  },
   backToList() {
     this.stopTimer();
     this.ended = true;
@@ -1923,6 +1939,14 @@ const ActionCards = {
     document.getElementById('ac-detail-content').scrollTop = 0;
   },
 
+  shareItem() {
+    const item = Rotation._currentItem;
+    if (!item) return;
+    var text = item.icon+' '+item.title+'\n\n';
+    (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
+    if (navigator.share) { navigator.share({title: item.title, text: text}); }
+    else { navigator.clipboard.writeText(text).then(function(){ alert('Copied to clipboard!'); }); }
+  },
   backToList() {
     document.getElementById('ac-list').classList.remove('hidden');
     document.getElementById('ac-detail').classList.add('hidden');
@@ -1974,6 +1998,14 @@ const HighYield = {
     document.getElementById('hy-detail-content').scrollTop = 0;
   },
 
+  shareItem() {
+    const item = Rotation._currentItem;
+    if (!item) return;
+    var text = item.icon+' '+item.title+'\n\n';
+    (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
+    if (navigator.share) { navigator.share({title: item.title, text: text}); }
+    else { navigator.clipboard.writeText(text).then(function(){ alert('Copied to clipboard!'); }); }
+  },
   backToList() {
     document.getElementById('hy-list').classList.remove('hidden');
     document.getElementById('hy-detail').classList.add('hidden');
@@ -2014,6 +2046,14 @@ const Rotation = {
     document.getElementById('rot-detail-content').scrollTop = 0;
   },
 
+  shareItem() {
+    const item = Rotation._currentItem;
+    if (!item) return;
+    var text = item.icon+' '+item.title+'\n\n';
+    (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
+    if (navigator.share) { navigator.share({title: item.title, text: text}); }
+    else { navigator.clipboard.writeText(text).then(function(){ alert('Copied to clipboard!'); }); }
+  },
   backToList() {
     document.getElementById('rot-list').classList.remove('hidden');
     document.getElementById('rot-detail').classList.add('hidden');
@@ -2419,6 +2459,14 @@ const MatchGame = {
     }
   },
 
+  shareItem() {
+    const item = Rotation._currentItem;
+    if (!item) return;
+    var text = item.icon+' '+item.title+'\n\n';
+    (item.items||[]).forEach(function(s){ text += '--- '+s.subtitle+' ---\n'+s.content+'\n\n'; });
+    if (navigator.share) { navigator.share({title: item.title, text: text}); }
+    else { navigator.clipboard.writeText(text).then(function(){ alert('Copied to clipboard!'); }); }
+  },
   backToList() {
     document.getElementById('match-start').classList.remove('hidden');
     document.getElementById('match-game').classList.add('hidden');
