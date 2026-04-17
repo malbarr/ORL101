@@ -1880,9 +1880,9 @@ const ActionCards = {
       const el = document.createElement('div');
       el.className = 'ac-card-item';
       el.innerHTML = `
-        <div class="ac-card-emoji">${card.emoji}</div>
+        <div class="ac-card-emoji">${card.icon}</div>
         <div class="ac-card-info">
-          <div class="ac-card-title">${card.title}</div>
+          <div class="ac-card-title">${card.action}</div>
           <div class="ac-card-meta">${(card.steps||[]).length} steps</div>
         </div>
         <div style="color:var(--text-hint); font-size:18px;">›</div>
@@ -1897,7 +1897,7 @@ const ActionCards = {
     if (!card) return;
     document.getElementById('ac-list').classList.add('hidden');
     document.getElementById('ac-detail').classList.remove('hidden');
-    document.getElementById('ac-detail-title').textContent = `${card.emoji} ${card.title}`;
+    document.getElementById('ac-detail-title').textContent = `${card.icon} ${card.action}`;
 
     let html = '<div class="ac-actions">';
     (card.steps||[]).forEach(a => {
