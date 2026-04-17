@@ -1327,35 +1327,11 @@ function showPretestModal() {
 }
 
 function updateHomeUI() {
-  if (!currentUser) return;
-  const pretestBanner = document.getElementById('pretest-banner');
-  const levelWrap = document.getElementById('level-progress-wrap');
-
-  if (pretestBanner) {
-    } else {
-      pretestBanner.classList.add('hidden');
-    }
-  }
-
-  if (levelWrap) {
-      const level = currentUser.current_level || 'beginner';
-      const badge = document.getElementById('current-level-badge');
-      if (badge) {
-        const labels = { beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced', completed: 'Completed' };
-        badge.textContent = labels[level] || level;
-        badge.className = `level-badge ${level}`;
-      }
-      // Color level steps
-      const levels = ['beginner', 'intermediate', 'advanced'];
-      const idx = levels.indexOf(level);
-      levels.forEach((l, i) => {
-        const el = document.getElementById(`lvl-${l}`);
-        if (el) el.style.background = i <= idx ? 'var(--teal)' : 'var(--border)';
-      });
-    } else {
-      levelWrap.classList.add('hidden');
-    }
-  }
+  if (currentUser == null) return;
+  const b=document.getElementById("pretest-banner");
+  if(b)b.classList.add("hidden");
+  const w=document.getElementById("level-progress-wrap");
+  if(w)w.classList.add("hidden");
 }
 
 // ── TESTS (Pre / Post) ───────────────────────────────────────────────
