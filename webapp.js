@@ -2094,7 +2094,7 @@ const SurviveGame = {
   saved: 0,
 
   showStart() {
-    this.shifts = ORL_DATA.survive_shifts || [];
+    const raw=ORL_DATA.survive_shifts||[];this.shifts=raw.length?[{icon:"hospital",name:"ENT Shift",patients:raw.map(q=>({vignette:q.scenario+q.question,options:q.options,correct:q.correct,alive:q.explanation||"Correct",dead:q.explanation||"Review"}))}]:[];
     document.getElementById('surv-start').classList.remove('hidden');
     document.getElementById('surv-game').classList.add('hidden');
     document.getElementById('surv-result').classList.add('hidden');
