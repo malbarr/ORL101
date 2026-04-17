@@ -2463,7 +2463,6 @@ async function init() {
     showSection('home');
   }
 
-  }
 
   // Init all sections
   await Exam.init();
