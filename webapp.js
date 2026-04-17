@@ -2463,7 +2463,6 @@ async function init() {
     showSection('home');
   }
 
-  // Show role selection modal on first open
   }
 
   // Init all sections
