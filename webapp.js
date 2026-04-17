@@ -1940,10 +1940,10 @@ const HighYield = {
       const el = document.createElement('div');
       el.className = 'hy-card-item';
       el.innerHTML = `
-        <div class="hy-card-num">Ch.${card.chapter}</div>
+        <div class="hy-card-num">Ch.${card.chapter_id}</div>
         <div class="hy-card-info">
           <div class="hy-card-title">${card.title.replace(/^Ch\.\d+\s*/, '')}</div>
-          <div class="hy-card-meta">${card.bullets.length} key points</div>
+          <div class="hy-card-meta">${card.points.length} key points</div>
         </div>
         <div style="color:var(--text-hint); font-size:18px;">›</div>
       `;
@@ -1960,7 +1960,7 @@ const HighYield = {
     document.getElementById('hy-detail-title').textContent = card.title;
 
     let html = '<div class="hy-bullets">';
-    card.bullets.forEach(b => {
+    card.points.forEach(b => {
       html += `<div class="hy-bullet"><span class="hy-dot">•</span> ${b}</div>`;
     });
     html += '</div>';
