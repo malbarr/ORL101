@@ -1266,13 +1266,17 @@ const Chat = {
     this._addMessage('⋯', 'ai', typingId);
 
     try {
-      const res = await apiFetch('/api/chat', {
-        method: 'POST',
-        body: JSON.stringify({ question }),
+      const q=question.toLowerCase();
+      const hits=[];
+      (ORL_DATA.chapters||[]).forEach(ch=>{
+        if((ch.title||'').toLowerCase().includes(q)) hits.push('Ch.'+ch.number+': '+ch.title);
       });
-      // Remove typing
+      (ORL_DATA.high_yield||[]).forEach(hy=>{
+        (hy.points||[]).forEach(pt=>{ if(pt.toLowerCase().includes(q)) hits.push('• '+pt); });
+      });
       document.getElementById(typingId)?.remove();
-      this._addMessage(res.answer, 'ai');
+      const ans=hits.length?hits.slice(0,6).join('\n'):'No results for: '+question;
+      this._addMessage(ans,'ai');
     } catch (e) {
       document.getElementById(typingId)?.remove();
       this._addMessage('⚠️ ' + (e.message || 'Error. Please try again.'), 'ai');
