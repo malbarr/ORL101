@@ -1905,7 +1905,7 @@ const ActionCards = {
 
     let html = '<div class="ac-actions">';
     (card.steps||[]).forEach(a => {
-      const cls = a.urgent ? 'ac-action urgent' : 'ac-action';
+      const cls='ac-action'; const txt=typeof a==='string'?a:(a.do||a.see||'');
       html += `<div class="${cls}">
         <div class="ac-see">${txt}</div>
         <div class="ac-arrow">→</div>
