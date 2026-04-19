@@ -1,46 +1,32 @@
-c = open("webapp.js").read()
+  openers: [
+    "Do you know...",
+    "Can you remember...",
+    "Test yourself:",
+    "Quick question:",
+    "What do we say about...",
+    "Don't forget:",
+    "Here is one for you:",
+    "Can you answer this?"
+  ],
 
-audio_player = '''
-const AudioPlayer = {
-  points: [],
-  index: 0,
-  playing: false,
-  utterance: null,
-
-  init(pts, title) {
-    this.stop();
-    this.points = pts;
-    this.index = 0;
-    this.playing = false;
-    const display = document.getElementById('audio-point-display');
-    const progress = document.getElementById('audio-progress');
-    if (display) display.textContent = 'Press Play to start listening...';
-    if (progress) progress.textContent = `0 / ${pts.length} points`;
+  getOpener() {
+    return this.openers[Math.floor(Math.random() * this.openers.length)];
   },
 
   parsePoint(pt) {
-    // If has colon -> Q: before, A: after
     const colonIdx = pt.indexOf(':');
     if (colonIdx > 0 && colonIdx < pt.length - 1) {
       const q = pt.substring(0, colonIdx).trim();
       const a = pt.substring(colonIdx + 1).trim();
       return { q, a };
     }
-    return { q: null, a: pt };
-  },
-
-  speak(text, onEnd) {
-    if (!('speechSynthesis' in window)) {
-      onEnd && onEnd();
-      return;
+    const eqIdx = pt.indexOf('=');
+    if (eqIdx > 0) {
+      const q = pt.substring(0, eqIdx).trim();
+      const a = pt.substring(eqIdx + 1).trim();
+      return { q, a };
     }
-    window.speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(text);
-    utt.lang = 'en-US';
-    utt.rate = 0.9;
-    utt.onend = onEnd;
-    this.utterance = utt;
-    window.speechSynthesis.speak(utt);
+    return { q: null, a: pt };
   },
 
   readPoint() {
@@ -49,81 +35,35 @@ const AudioPlayer = {
       const btn = document.getElementById('audio-play-btn');
       if (btn) btn.textContent = '▶ Play';
       const display = document.getElementById('audio-point-display');
-      if (display && this.index >= this.points.length) display.textContent = '✅ Done!';
+      if (display && this.index >= this.points.length) display.textContent = '✅ Session complete!';
       return;
     }
     const pt = this.points[this.index];
     const { q, a } = this.parsePoint(pt);
     const display = document.getElementById('audio-point-display');
     const progress = document.getElementById('audio-progress');
-    if (display) display.textContent = pt;
+    if (display) display.innerHTML = q
+      ? `<div style="color:var(--teal);font-size:12px;margin-bottom:6px;">${this.getOpener()}</div><div style="font-weight:600;">${q}</div><div style="color:var(--text-hint);font-size:12px;margin-top:8px;">Answer coming...</div>`
+      : `<div>${pt}</div>`;
     if (progress) progress.textContent = `${this.index + 1} / ${this.points.length}`;
 
     if (q) {
-      this.speak(q, () => {
+      const opener = this.getOpener();
+      this.speak(opener + ' ' + q, () => {
         if (!this.playing) return;
         setTimeout(() => {
           if (!this.playing) return;
-          this.speak(a, () => {
+          if (display) display.innerHTML = `<div style="color:var(--teal);font-size:12px;margin-bottom:6px;">Answer:</div><div>${a}</div>`;
+          this.speak('The answer is. ' + a, () => {
             if (!this.playing) return;
-            setTimeout(() => { this.index++; this.readPoint(); }, 1500);
+            setTimeout(() => { this.index++; this.readPoint(); }, 1800);
           });
-        }, 2000);
+        }, 2500);
       });
     } else {
-      this.speak(a, () => {
+      this.speak(pt, () => {
         if (!this.playing) return;
         setTimeout(() => { this.index++; this.readPoint(); }, 1500);
       });
     }
   },
-
-  toggle() {
-    const btn = document.getElementById('audio-play-btn');
-    if (this.playing) {
-      this.playing = false;
-      window.speechSynthesis.pause();
-      if (btn) btn.textContent = '▶ Resume';
-    } else {
-      this.playing = true;
-      if (btn) btn.textContent = '⏸ Pause';
-      if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume();
-      } else {
-        this.readPoint();
-      }
-    }
-  },
-
-  next() {
-    window.speechSynthesis.cancel();
-    this.index++;
-    if (this.playing) this.readPoint();
-    else {
-      const pt = this.points[this.index] || '';
-      const display = document.getElementById('audio-point-display');
-      const progress = document.getElementById('audio-progress');
-      if (display) display.textContent = pt;
-      if (progress) progress.textContent = `${this.index + 1} / ${this.points.length}`;
-    }
-  },
-
-  stop() {
-    this.playing = false;
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    const btn = document.getElementById('audio-play-btn');
-    if (btn) btn.textContent = '▶ Play';
-    this.index = 0;
-  }
-};
-'''
-
-# Add before const Course =
-old = 'const Course = {'
-new = audio_player + '\nconst Course = {'
-
-if old in c:
-    open("webapp.js","w").write(c.replace(old, new, 1))
-    print("AudioPlayer added")
-else:
-    print("Not found")

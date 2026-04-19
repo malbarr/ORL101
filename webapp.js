@@ -689,6 +689,21 @@ const AudioPlayer = {
   playing: false,
   utterance: null,
 
+  openers: [
+    "Do you know...",
+    "Can you remember...",
+    "Test yourself:",
+    "Quick question:",
+    "What do we say about...",
+    "Don't forget:",
+    "Here is one for you:",
+    "Can you answer this?"
+  ],
+
+  getOpener() {
+    return this.openers[Math.floor(Math.random() * this.openers.length)];
+  },
+
   init(pts, title) {
     this.stop();
     this.points = pts;
@@ -701,11 +716,16 @@ const AudioPlayer = {
   },
 
   parsePoint(pt) {
-    // If has colon -> Q: before, A: after
     const colonIdx = pt.indexOf(':');
     if (colonIdx > 0 && colonIdx < pt.length - 1) {
       const q = pt.substring(0, colonIdx).trim();
       const a = pt.substring(colonIdx + 1).trim();
+      return { q, a };
+    }
+    const eqIdx = pt.indexOf('=');
+    if (eqIdx > 0) {
+      const q = pt.substring(0, eqIdx).trim();
+      const a = pt.substring(eqIdx + 1).trim();
       return { q, a };
     }
     return { q: null, a: pt };
@@ -742,18 +762,21 @@ const AudioPlayer = {
     if (progress) progress.textContent = `${this.index + 1} / ${this.points.length}`;
 
     if (q) {
-      this.speak(q, () => {
+      const opener = this.getOpener();
+      if (display) display.innerHTML = `<div style="color:var(--teal);font-size:12px;margin-bottom:6px;">${opener}</div><div style="font-weight:600;">${q}</div><div style="color:var(--text-hint);font-size:12px;margin-top:8px;font-style:italic;">Think about it...</div>`;
+      this.speak(opener + ' ' + q, () => {
         if (!this.playing) return;
         setTimeout(() => {
           if (!this.playing) return;
-          this.speak(a, () => {
+          if (display) display.innerHTML = `<div style="color:#C8A951;font-size:12px;margin-bottom:6px;">Answer:</div><div>${a}</div>`;
+          this.speak('The answer is. ' + a, () => {
             if (!this.playing) return;
-            setTimeout(() => { this.index++; this.readPoint(); }, 1500);
+            setTimeout(() => { this.index++; this.readPoint(); }, 1800);
           });
-        }, 2000);
+        }, 2500);
       });
     } else {
-      this.speak(a, () => {
+      this.speak(pt, () => {
         if (!this.playing) return;
         setTimeout(() => { this.index++; this.readPoint(); }, 1500);
       });
