@@ -1073,6 +1073,7 @@ const Course = {
           contentEl.innerHTML = `
             <div style="margin-bottom:12px;display:flex;justify-content:flex-end;">
               <button onclick="Course.mode='detailed';localStorage.setItem('orl101_course_mode','detailed');document.querySelectorAll('.course-mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode==='detailed'));Course.openSubTopic(Course.currentSubTopicIndex);" style="padding:6px 14px;background:var(--teal);color:white;border:none;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;">📖 Full Details →</button>
+              <button onclick="Course.mode='audio';localStorage.setItem('orl101_course_mode','audio');document.querySelectorAll('.course-mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode==='audio'));Course.openSubTopic(Course.currentSubTopicIndex);" style="padding:6px 14px;background:var(--card-bg);color:var(--teal);border:1px solid var(--teal);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;">🔊 Audio →</button>
             </div>
             ${qaHtml}`;
         } else {
@@ -1094,6 +1095,7 @@ const Course = {
               <button onclick="AudioPlayer.next()" style="padding:10px 20px;background:var(--card-bg);color:var(--text);border:1px solid var(--border);border-radius:20px;font-size:14px;cursor:pointer;">⏭ Next</button>
               <button onclick="AudioPlayer.stop()" style="padding:10px 20px;background:var(--card-bg);color:var(--red);border:1px solid var(--border);border-radius:20px;font-size:14px;cursor:pointer;">⏹ Stop</button>
             </div>
+            <div style="margin-top:16px;"><button onclick="AudioPlayer.stop();Course.mode='quick';localStorage.setItem('orl101_course_mode','quick');document.querySelectorAll('.course-mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode==='quick'));Course.openSubTopic(Course.currentSubTopicIndex);" style="padding:6px 16px;background:var(--card-bg);color:var(--teal);border:1px solid var(--teal);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;">⚡ Quick Review →</button></div>
             <div id="audio-progress" style="margin-top:16px;font-size:12px;color:var(--text-hint);"></div>
           </div>`;
         AudioPlayer.init(pts, topicTitle);
