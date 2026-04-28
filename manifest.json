@@ -1,7 +1,7 @@
 {
   "name": "ORL 101",
   "short_name": "ORL101",
-  "start_url": "/",
+  "start_url": "/ORL101/",
   "display": "standalone",
   "background_color": "#0D7377",
   "theme_color": "#0D7377",
