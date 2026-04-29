@@ -15,6 +15,26 @@
   <style>
     /* Extra inline styles for safe-area etc. */
     body { padding-top: env(safe-area-inset-top); }
+    #pwa-install-btn {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      align-items: center;
+      gap: 6px;
+      background: #0D7377;
+      color: #fff;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(13,115,119,0.4);
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -1233,10 +1253,32 @@
 <script src="webapp.js"></script>
 
 
+<button id="pwa-install-btn" aria-label="تثبيت التطبيق">📲 تثبيت التطبيق</button>
+
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js');
 }
+
+let _pwaPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  _pwaPrompt = e;
+  document.getElementById('pwa-install-btn').style.display = 'flex';
+});
+document.getElementById('pwa-install-btn').addEventListener('click', async function() {
+  if (!_pwaPrompt) return;
+  _pwaPrompt.prompt();
+  const result = await _pwaPrompt.userChoice;
+  if (result.outcome === 'accepted') {
+    document.getElementById('pwa-install-btn').style.display = 'none';
+  }
+  _pwaPrompt = null;
+});
+window.addEventListener('appinstalled', function() {
+  document.getElementById('pwa-install-btn').style.display = 'none';
+  _pwaPrompt = null;
+});
 </script>
 </body>
 </html>
