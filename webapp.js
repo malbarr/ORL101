@@ -2854,13 +2854,12 @@ const Action = {
 
 // ═══════════════════ FEEDBACK ═══════════════════
 function sendFeedback() {
-  const userName = currentUser?.first_name ? ` (${currentUser.first_name})` : '';
-  const text = encodeURIComponent('\u0645\u0644\u0627\u062d\u0638\u0629 ORL101' + userName + ':\n');
-  const waUrl = `https://wa.me/966582701349?text=${text}`;
+  /* blind contact relay — no personal number is exposed in this app */
+  const url = 'https://dr-albar.com/contact/?src=orl101';
   if (window.Telegram?.WebApp?.openLink) {
-    Telegram.WebApp.openLink(waUrl);
+    Telegram.WebApp.openLink(url);
   } else {
-    window.open(waUrl, '_blank');
+    window.open(url, '_blank', 'noopener');
   }
   haptic('medium');
 }
