@@ -31,6 +31,43 @@
 }
 .tut-chip.done { background: #E8F5E9; color: #2E7D32; }
 
+/* ── tutorial card action buttons ──────────────────────────────────────── */
+.tut-card-btns { display: flex; gap: 8px; margin-top: 11px; }
+.tut-go {
+  flex: 1; padding: 11px 8px; border: none; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 800; cursor: pointer; font-family: var(--font);
+  background: var(--bg-secondary); color: var(--text);
+}
+.tut-go.acts { background: var(--teal); color: #fff; }
+.tut-go:active { transform: scale(.98); }
+.tut-go[disabled] { opacity: .4; cursor: default; }
+
+/* ── jump-to-slide row ─────────────────────────────────────────────────── */
+.tut-jump { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+.tut-jump input[type=range] { width: 100%; accent-color: var(--teal); }
+
+/* ── activity picker menu ──────────────────────────────────────────────── */
+.tut-menu { display: flex; flex-direction: column; gap: 9px; }
+.tut-menu-item {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  padding: 14px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--bg);
+  cursor: pointer; font-family: var(--font); color: var(--text);
+  box-shadow: var(--shadow);
+}
+.tut-menu-item:active { transform: scale(.99); }
+.tut-menu-n {
+  flex: 0 0 28px; height: 28px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--teal); color: #fff; font-size: 12.5px; font-weight: 800;
+}
+.tut-menu-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.tut-menu-title { font-size: 14px; font-weight: 700; line-height: 1.4; }
+.tut-menu-kind {
+  font-size: 10.5px; font-weight: 800; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-hint);
+}
+
 /* ── progress bar ──────────────────────────────────────────────────────── */
 .tut-progress-wrap { padding: 0 16px 10px; }
 .tut-progress {

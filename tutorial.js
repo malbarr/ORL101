@@ -87,15 +87,20 @@ const Tutorial = {
       const best = (p.bestScore != null && p.bestOf)
         ? `<span class="tut-chip done">🏅 best ${p.bestScore}/${p.bestOf}</span>` : '';
       return `
-        <div class="tut-card" onclick="Tutorial.open('${t.slug}')">
+        <div class="tut-card">
           <div class="tut-card-icon" style="background:${t.colour || 'var(--teal)'};">${t.icon || '📘'}</div>
           <div class="tut-card-body">
             <div class="tut-card-title">${this._esc(t.title)}</div>
             <div class="tut-card-ar">${this._esc(t.title_ar || '')}</div>
             <div class="tut-card-blurb">${this._esc(t.blurb || '')}</div>
             <div class="tut-card-meta">${slidesChip}${actChip}${best}</div>
+            <div class="tut-card-btns">
+              <button class="tut-go slides" onclick="Tutorial.open('${t.slug}')"
+                      ${ns ? '' : 'disabled'}>📑 Slides${ns ? ` (${ns})` : ''}</button>
+              <button class="tut-go acts" onclick="Tutorial.openActivities('${t.slug}')"
+                      ${na ? '' : 'disabled'}>🎯 Activities${na ? ` (${na})` : ''}</button>
+            </div>
           </div>
-          <div class="hm-arrow">›</div>
         </div>`;
     }).join('');
   },
@@ -108,6 +113,17 @@ const Tutorial = {
     if (typeof haptic === 'function') haptic('light');
     if ((t.slides || []).length) this.renderSlides();
     else if ((t.activities || []).length) this.startActivities();
+    else this.renderPending();
+  },
+
+  // Jump straight to the activities without walking the whole deck.
+  openActivities(slug) {
+    const t = this.list.find(x => x.slug === slug);
+    if (!t) return;
+    this.current = t;
+    this.slideIdx = 0;
+    if (typeof haptic === 'function') haptic('light');
+    if ((t.activities || []).length) this.startActivities();
     else this.renderPending();
   },
 
@@ -171,6 +187,12 @@ const Tutorial = {
                   onclick="Tutorial.prevSlide()">← Prev</button>
           <div class="tut-nav-count">${this.slideIdx + 1}/${slides.length}</div>
           <button class="btn" onclick="Tutorial.nextSlide()">${nextLabel}</button>
+        </div>
+        <div class="tut-jump">
+          <input type="range" min="1" max="${slides.length}" value="${this.slideIdx + 1}"
+                 oninput="Tutorial.jumpSlide(this.value)" aria-label="Jump to slide">
+          ${(t.activities || []).length ? `<button class="tut-go acts"
+                 onclick="Tutorial.startActivities()">🎯 Skip to activities (${t.activities.length})</button>` : ''}
         </div>`;
     }
 
@@ -190,11 +212,51 @@ const Tutorial = {
     if (this.slideIdx > 0) { this.slideIdx--; this.renderSlides(); }
   },
 
+  jumpSlide(v) {
+    const n = Math.max(1, Math.min(parseInt(v, 10) || 1, (this.current.slides || []).length));
+    this.slideIdx = n - 1;
+    this.renderSlides();
+  },
+
   // ── activities ────────────────────────────────────────────────────────
   startActivities() {
     this.view = 'activities';
     this.actIdx = 0; this.score = 0; this.attempted = 0;
     this._show('tut-act-view');
+    this.renderMenu();
+  },
+
+  // Pick any activity directly — no forced sequence.
+  renderMenu() {
+    const t = this.current;
+    const acts = t.activities || [];
+    this._setTitle(`${t.title} — Activities`, 'tut-act-title');
+    const strip = document.getElementById('tut-act-score');
+    if (strip) strip.innerHTML = `<b>${acts.length}</b> activities &nbsp;·&nbsp; pick any one`;
+    const host = document.getElementById('tut-act-body');
+    if (host) {
+      host.innerHTML = `<div class="tut-menu">` + acts.map((a, i) => {
+        const g = TUT_GAMES[a.type] || { label: a.type };
+        return `<button class="tut-menu-item" onclick="Tutorial.goActivity(${i})">
+          <span class="tut-menu-n">${i + 1}</span>
+          <span class="tut-menu-body">
+            <span class="tut-menu-title">${this._esc(a.title || g.label)}</span>
+            <span class="tut-menu-kind">${this._esc(g.label)}</span>
+          </span>
+          <span class="hm-arrow">›</span>
+        </button>`;
+      }).join('') + `</div>`;
+    }
+    const f = document.getElementById('tut-act-nav');
+    if (f) f.innerHTML = `<div class="tut-nav">
+      <button class="btn btn-secondary" onclick="Tutorial.renderList()">← Tutorials</button>
+      <button class="btn" onclick="Tutorial.goActivity(0)">▶ Play all in order</button>
+    </div>`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  goActivity(i) {
+    this.actIdx = i;
     this.renderActivity();
   },
 
@@ -243,7 +305,7 @@ const Tutorial = {
     const f = document.getElementById('tut-act-nav');
     if (!f) return;
     f.innerHTML = `<div class="tut-nav">
-      <button class="btn btn-secondary" onclick="Tutorial.renderList()">Exit</button>
+      <button class="btn btn-secondary" onclick="Tutorial.renderMenu()">☰ All activities</button>
       <button class="btn" id="tut-next-btn" onclick="Tutorial.nextActivity()">
         ${skippable ? 'Skip →' : 'Next →'}</button>
     </div>`;
@@ -274,7 +336,7 @@ const Tutorial = {
     }
     const f = document.getElementById('tut-act-nav');
     if (f) f.innerHTML = `<div class="tut-nav">
-      <button class="btn btn-secondary" onclick="Tutorial.open('${t.slug}')">↻ Review slides</button>
+      <button class="btn btn-secondary" onclick="Tutorial.renderMenu()">☰ All activities</button>
       <button class="btn" onclick="Tutorial.renderList()">Done</button>
     </div>`;
     const strip = document.getElementById('tut-act-score');
