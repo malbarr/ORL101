@@ -1,0 +1,212 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ORL101 — TUTORIAL section styles
+   Scoped under #tutorial / .tut- to avoid touching any existing component.
+   Reuses the app's CSS variables so Telegram theming keeps working.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── list of tutorials ─────────────────────────────────────────────────── */
+.tut-list { display: flex; flex-direction: column; gap: 12px; }
+
+.tut-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px; border-radius: var(--radius);
+  background: var(--bg); border: 1px solid var(--border);
+  box-shadow: var(--shadow); cursor: pointer;
+  transition: transform .12s ease;
+}
+.tut-card:active { transform: scale(.98); }
+.tut-card-icon {
+  width: 52px; height: 52px; flex: 0 0 52px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; border-radius: 14px; color: #fff;
+}
+.tut-card-body { flex: 1; min-width: 0; }
+.tut-card-title { font-size: 16px; font-weight: 800; }
+.tut-card-ar { font-size: 13px; color: var(--text-hint); margin-top: 2px; }
+.tut-card-blurb { font-size: 12px; color: var(--text-hint); margin-top: 4px; }
+.tut-card-meta { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.tut-chip {
+  font-size: 11px; font-weight: 700; padding: 3px 9px;
+  border-radius: 999px; background: var(--bg-secondary); color: var(--text-hint);
+}
+.tut-chip.done { background: #E8F5E9; color: #2E7D32; }
+
+/* ── progress bar ──────────────────────────────────────────────────────── */
+.tut-progress-wrap { padding: 0 16px 10px; }
+.tut-progress {
+  height: 7px; border-radius: 999px; background: var(--bg-secondary);
+  overflow: hidden;
+}
+.tut-progress-fill {
+  height: 100%; border-radius: 999px; background: var(--teal);
+  transition: width .25s ease;
+}
+.tut-progress-label {
+  font-size: 11px; color: var(--text-hint); margin-top: 6px; text-align: center;
+}
+
+/* ── slide viewer ──────────────────────────────────────────────────────── */
+.tut-slide {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 18px; margin-bottom: 14px;
+}
+.tut-slide-n {
+  font-size: 11px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-hint); margin-bottom: 6px;
+}
+.tut-slide h2 { font-size: 18px; font-weight: 800; line-height: 1.35; }
+.tut-slide-ar {
+  font-size: 14px; color: var(--text-hint); margin-top: 4px;
+  direction: rtl; text-align: right;
+}
+.tut-slide ul { margin: 12px 0 0 0; padding-left: 20px; }
+.tut-slide li { font-size: 14px; line-height: 1.75; margin-bottom: 7px; }
+.tut-slide-img {
+  width: 100%; border-radius: var(--radius-sm); margin-top: 14px;
+  display: block; background: var(--bg-secondary);
+}
+.tut-slide-cap {
+  font-size: 11.5px; color: var(--text-hint); margin-top: 6px;
+  text-align: center; font-style: italic;
+}
+.tut-slide-note {
+  margin-top: 14px; padding: 12px 14px; border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #EBF8F8, #F0FFF4);
+  border-left: 3px solid var(--teal);
+  font-size: 13px; line-height: 1.65;
+}
+
+/* ── nav row ───────────────────────────────────────────────────────────── */
+.tut-nav { display: flex; gap: 10px; align-items: center; }
+.tut-nav .btn { flex: 1; }
+.tut-nav-count {
+  font-size: 12px; font-weight: 700; color: var(--text-hint);
+  min-width: 56px; text-align: center;
+}
+
+/* ── generic activity shell ────────────────────────────────────────────── */
+.tut-act {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 18px; margin-bottom: 14px;
+}
+.tut-act-kind {
+  display: inline-block; font-size: 10.5px; font-weight: 800;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--teal); color: #fff; margin-bottom: 10px;
+}
+.tut-act h3 { font-size: 16.5px; font-weight: 800; line-height: 1.4; }
+.tut-act-stem { font-size: 14.5px; line-height: 1.7; margin-top: 10px; }
+.tut-act-img { width: 100%; border-radius: var(--radius-sm); margin-top: 12px; }
+
+/* option buttons (MCQ, scenario, guess-who/what, millionaire) */
+.tut-opt {
+  display: flex; align-items: flex-start; gap: 10px;
+  width: 100%; text-align: left; margin-top: 9px;
+  padding: 13px 14px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); background: var(--bg);
+  font-size: 14px; line-height: 1.55; font-family: var(--font);
+  color: var(--text); cursor: pointer;
+}
+.tut-opt:active { transform: scale(.99); }
+.tut-opt-key {
+  flex: 0 0 24px; height: 24px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-secondary); font-size: 12px; font-weight: 800;
+}
+.tut-opt.correct { border-color: var(--green); background: #E8F5E9; }
+.tut-opt.correct .tut-opt-key { background: var(--green); color: #fff; }
+.tut-opt.wrong { border-color: var(--red); background: #FFEBEE; }
+.tut-opt.wrong .tut-opt-key { background: var(--red); color: #fff; }
+.tut-opt[disabled] { cursor: default; }
+
+/* feedback */
+.tut-fb {
+  margin-top: 13px; padding: 13px 14px; border-radius: var(--radius-sm);
+  font-size: 13.5px; line-height: 1.7;
+}
+.tut-fb.ok { background: #E8F5E9; border-left: 3px solid var(--green); }
+.tut-fb.no { background: #FFEBEE; border-left: 3px solid var(--red); }
+.tut-fb-title { font-weight: 800; margin-bottom: 5px; }
+
+/* ── jeopardy board ───────────────────────────────────────────────────── */
+.tut-jep-grid { display: grid; gap: 7px; margin-top: 12px; }
+.tut-jep-cat {
+  font-size: 11px; font-weight: 800; text-align: center;
+  padding: 9px 4px; border-radius: var(--radius-sm);
+  background: var(--teal); color: #fff; line-height: 1.3;
+}
+.tut-jep-cell {
+  padding: 15px 4px; border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: var(--gold-light); font-weight: 800; font-size: 15px;
+  text-align: center; cursor: pointer; border: none; font-family: var(--font);
+}
+.tut-jep-cell[disabled] { opacity: .3; cursor: default; }
+
+/* ── matching ──────────────────────────────────────────────────────────── */
+.tut-match-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.tut-match-item {
+  padding: 12px 11px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); background: var(--bg);
+  font-size: 13px; line-height: 1.5; cursor: pointer;
+  font-family: var(--font); color: var(--text); text-align: left;
+}
+.tut-match-item.sel { border-color: var(--teal); background: #EBF8F8; }
+.tut-match-item.done { border-color: var(--green); background: #E8F5E9; opacity: .65; cursor: default; }
+
+/* ── spot / hotspot image ──────────────────────────────────────────────── */
+.tut-spot-wrap { position: relative; margin-top: 12px; }
+.tut-spot-wrap img { width: 100%; border-radius: var(--radius-sm); display: block; }
+.tut-spot-dot {
+  position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px;
+  border-radius: 50%; border: 2.5px solid var(--gold);
+  background: rgba(201,168,76,.28); cursor: pointer;
+}
+.tut-spot-dot.found {
+  border-color: var(--green); background: rgba(67,160,71,.45);
+  cursor: default;
+}
+
+/* ── swipe / true-false pair ───────────────────────────────────────────── */
+.tut-tf { display: flex; gap: 10px; margin-top: 14px; }
+.tut-tf button {
+  flex: 1; padding: 15px; border-radius: var(--radius-sm);
+  border: none; font-size: 15px; font-weight: 800; cursor: pointer;
+  font-family: var(--font);
+}
+.tut-tf .yes { background: #E8F5E9; color: #2E7D32; }
+.tut-tf .no  { background: #FFEBEE; color: #C62828; }
+
+/* ── order / sequence (cooking, shopping, chess-move style) ────────────── */
+.tut-order-pool, .tut-order-slots { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.tut-order-slots { min-height: 10px; }
+.tut-order-item {
+  padding: 12px 13px; border-radius: var(--radius-sm);
+  border: 1.5px dashed var(--border); background: var(--bg-secondary);
+  font-size: 13.5px; line-height: 1.5; cursor: pointer;
+  font-family: var(--font); color: var(--text); text-align: left;
+}
+.tut-order-item.placed { border-style: solid; background: var(--bg); }
+.tut-order-label {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text-hint); margin-top: 14px;
+}
+
+/* ── score strip ───────────────────────────────────────────────────────── */
+.tut-score {
+  display: flex; gap: 10px; justify-content: center; align-items: center;
+  padding: 11px 16px; margin: 0 16px 12px; border-radius: var(--radius);
+  background: var(--bg-secondary); font-size: 13px; font-weight: 700;
+}
+.tut-score b { color: var(--teal); }
+
+/* ── empty state (content not loaded yet) ──────────────────────────────── */
+.tut-empty {
+  text-align: center; padding: 46px 24px; color: var(--text-hint);
+}
+.tut-empty-icon { font-size: 54px; margin-bottom: 14px; }
+.tut-empty h3 { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.tut-empty p { font-size: 13.5px; line-height: 1.7; }

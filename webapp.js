@@ -2699,7 +2699,7 @@ async function init() {
 
   // Handle hash routing
   const hash = location.hash.replace('#', '') || 'home';
-  if (['home', 'exam', 'cards', 'course', 'cases', 'trivia', 'action', 'actioncards', 'highyield', 'rotation', 'swipe', 'survive', 'pickmistake', 'matching'].includes(hash)) {
+  if (['home', 'exam', 'cards', 'course', 'cases', 'trivia', 'action', 'actioncards', 'highyield', 'rotation', 'swipe', 'survive', 'pickmistake', 'matching', 'tutorial'].includes(hash)) {
     showSection(hash);
   } else {
     showSection('home');
@@ -2717,6 +2717,7 @@ async function init() {
   Rotation.init();
   SurviveGame.showStart();
   MatchGame.init();
+  if (typeof Tutorial !== 'undefined') Tutorial.init();
 
   // Flashcard swipe
   const flashcardEl = document.getElementById('flashcard');

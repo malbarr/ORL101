@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="webapp.css">
+  <link rel="stylesheet" href="tutorial.css">
   <style>
     /* Extra inline styles for safe-area etc. */
     body { padding-top: env(safe-area-inset-top); }
@@ -45,7 +46,7 @@
   <div class="hm-grid">
 
     <div class="hm-card" onclick="toggleSub('sub-learn',this)">
-      <div class="hm-left"><div class="hm-icon">📚</div><div><div class="hm-title">Learn</div><div class="hm-desc">Course · Exam · Cards · Cases · High Yield</div></div></div>
+      <div class="hm-left"><div class="hm-icon">📚</div><div><div class="hm-title">Learn</div><div class="hm-desc">Course · Exam · Cards · Cases · High Yield · Tutorial</div></div></div>
       <div class="hm-arrow">›</div>
     </div>
     <div class="hm-sub hidden" id="sub-learn">
@@ -54,6 +55,7 @@
       <div class="mode-card" data-mode="cards"><div class="mode-icon">🃏</div><div class="mode-title">Cards</div><div class="mode-desc">Clinical pearls</div></div>
       <div class="mode-card" data-mode="cases"><div class="mode-icon">🏥</div><div class="mode-title">Cases</div><div class="mode-desc">Clinical cases</div></div>
       <div class="mode-card" data-mode="highyield"><div class="mode-icon">⚡</div><div class="mode-title">High Yield</div><div class="mode-desc">Key bullets</div></div>
+      <div class="mode-card" data-mode="tutorial"><div class="mode-icon">🧑‍🏫</div><div class="mode-title">Tutorial</div><div class="mode-desc">Throat · Nose</div></div>
     </div>
 
     </div>
@@ -701,6 +703,42 @@
   </div>
 </section>
 
+<!-- ═══════════════════════════ TUTORIAL ══════════════════════════════ -->
+<section id="tutorial" class="section">
+
+  <!-- list of tutorials -->
+  <div id="tut-list-view">
+    <div class="page-header" style="background:linear-gradient(135deg,#B23A48,#0D7377);">
+      <h1>🧑‍🏫 Tutorial</h1>
+      <p>Slide walk-through + mixed activities</p>
+    </div>
+    <div id="tut-list" class="tut-list p-16"></div>
+  </div>
+
+  <!-- slide walk-through -->
+  <div id="tut-slides-view" class="hidden">
+    <div class="page-header" style="display:flex; align-items:center; gap:10px; background:linear-gradient(135deg,#B23A48,#0D7377);">
+      <button onclick="Tutorial.renderList()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">←</button>
+      <div style="flex:1;"><h1 id="tut-slide-title" style="font-size:17px;">Tutorial</h1></div>
+    </div>
+    <div id="tut-progress-wrap" class="tut-progress-wrap"></div>
+    <div id="tut-slide-body" class="p-16"></div>
+    <div id="tut-slide-nav" class="p-16" style="padding-top:0;"></div>
+  </div>
+
+  <!-- activities -->
+  <div id="tut-act-view" class="hidden">
+    <div class="page-header" style="display:flex; align-items:center; gap:10px; background:linear-gradient(135deg,#1a1a2e,#B23A48);">
+      <button onclick="Tutorial.renderList()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">←</button>
+      <div style="flex:1;"><h1 id="tut-act-title" style="font-size:17px;">Activities</h1></div>
+    </div>
+    <div id="tut-act-score" class="tut-score"></div>
+    <div id="tut-act-body" class="p-16"></div>
+    <div id="tut-act-nav" class="p-16" style="padding-top:0;"></div>
+  </div>
+
+</section>
+
 <!-- ═══════════════════════════ IN ROTATION ═══════════════════════════ -->
 <section id="rotation" class="section">
   <div class="page-header" style="background:linear-gradient(135deg,#0D7377,#2d6a4f);">
@@ -998,7 +1036,9 @@
 </style>
 
 <script src="data.js?v=4"></script>
+<script src="tutorials.js?v=1"></script>
 <script src="static_api.js"></script>
-<script src="webapp.js?v=36"></script>
+<script src="webapp.js?v=37"></script>
+<script src="tutorial.js?v=1"></script>
 </body>
 </html>
