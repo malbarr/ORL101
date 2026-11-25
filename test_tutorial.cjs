@@ -39,12 +39,17 @@ T.init();
 ok(q('#tut-list .tut-card').length === 2, 'two tutorial cards');
 const goBtns = [...q('#tut-list .tut-go')];
 ok(goBtns.length === 4, 'four action buttons (Slides + Activities per card), got ' + goBtns.length);
-ok(goBtns.some(b => /Activities \(15\)/.test(b.textContent)), 'Throat shows Activities (15)');
-ok(goBtns.some(b => /Slides \(84\)/.test(b.textContent)), 'Throat shows Slides (84)');
+const TH = window.ORL_TUTORIALS.find(t => t.slug === 'throat');
+const NO = window.ORL_TUTORIALS.find(t => t.slug === 'nose');
+ok(goBtns.some(b => b.textContent.includes(`Activities (${TH.activities.length})`)),
+   `Throat shows Activities (${TH.activities.length})`);
+ok(goBtns.some(b => b.textContent.includes(`Slides (${TH.slides.length})`)),
+   `Throat shows Slides (${TH.slides.length})`);
 
 console.log('\n== activities reachable in ONE tap (the reported bug) ==');
 goBtns[1].click();          // Activities on card 1
-ok(q('.tut-menu-item').length === 15, 'menu lists 15 activities, got ' + q('.tut-menu-item').length);
+ok(q('.tut-menu-item').length === TH.activities.length,
+   `menu lists all ${TH.activities.length} activities, got ` + q('.tut-menu-item').length);
 ok(!window.document.getElementById('tut-act-view').classList.contains('hidden'), 'activity view visible');
 
 console.log('\n== slide view: jump control + skip button ==');
@@ -169,6 +174,28 @@ for (const t of window.ORL_TUTORIALS) {
   ok(t.slides.every(s => s.title && s.image), `${t.slug}: every slide has a title and image`);
   ok(t.activities.every(a => a.title), `${t.slug}: every activity has a title`);
   ok(t.activities.every(a => G[a.type]), `${t.slug}: every activity type is registered`);
+}
+
+console.log('\n== slide coverage (every text-bearing slide must be examined) ==');
+function citedSlides(a) {
+  const s = JSON.stringify(a), h = new Set();
+  for (const m of s.matchAll(/[Ss]lides?\s+(\d+)\s*-\s*(\d+)/g))
+    for (let i = +m[1]; i <= +m[2]; i++) h.add(i);
+  for (const m of s.matchAll(/[Ss]lide\s+(\d+)/g)) h.add(+m[1]);
+  for (const m of s.matchAll(/\/p(\d\d)\.webp/g)) h.add(+m[1]);
+  for (const n of (a._covers || [])) h.add(+n);
+  return h;
+}
+for (const t of window.ORL_TUTORIALS) {
+  const cov = new Set();
+  for (const a of t.activities) for (const n of citedSlides(a)) if (n >= 1 && n <= t.slides.length) cov.add(n);
+  // a slide counts as "teaching content" if its own bullets carry real text
+  const heavy = t.slides.filter(s => s.bullets.join(' ').length > 120).map(s => s.n);
+  const uncovered = heavy.filter(n => !cov.has(n));
+  ok(uncovered.length === 0,
+     `${t.slug}: all ${heavy.length} text-heavy slides are covered by an activity` +
+     (uncovered.length ? ` — MISSING ${uncovered.join(',')}` : ''));
+  console.log(`       ${t.slug}: ${cov.size}/${t.slides.length} slides touched (${Math.round(100*cov.size/t.slides.length)}%), ${t.activities.length} activities`);
 }
 
 console.log(`\n${fail ? 'FAILED' : 'ALL GREEN'} — pass ${pass}, fail ${fail}`);

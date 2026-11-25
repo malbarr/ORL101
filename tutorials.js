@@ -2,9 +2,9 @@
 // ORL101 — TUTORIALS DATA  (generated from Dr Al-Bar's own slide decks)
 // Sources: 'Throat tutorial 2026' (84 slides), 'NOSE & PARANASAL SINUSES
 // tutorial 2025' (69 slides). Slide titles, bullets and page images come
-// VERBATIM from those decks; every activity cites the slide it came from.
-// Regenerate with D:/VIDA-Copilot/_slides/ build scripts — do not hand-edit
-// slides[], and never add medical content that is not in the decks.
+// VERBATIM from those decks; every activity explanation cites its slide.
+// Rebuild from D:/VIDA-Copilot/_slides/ (activities.json + activities_gap.json).
+// Never add medical content that is not in the decks.
 // ═══════════════════════════════════════════════════════════════════════════
 
 window.ORL_TUTORIALS = [
@@ -1415,6 +1415,279 @@ window.ORL_TUTORIALS = [
     ],
     "answer_sentence": "creation of permanent or semi permanent opening in trachea",
     "explanation": "Slide 46: a tracheotomy is an operative procedure that creates an artificial opening in the trachea; a tracheostomy is the creation of a permanent or semi-permanent opening in the trachea."
+   },
+   {
+    "type": "matching",
+    "title": "Which site does the symptom point to?",
+    "_covers": [
+     11
+    ],
+    "left": [
+     "Snoring with otitis media and epistaxis",
+     "Halitosis, trismus and a muffled voice",
+     "Globus sensation",
+     "Neck mass with otalgia (all three sites)"
+    ],
+    "right": [
+     "Any of the three — it is common to all",
+     "Nasopharyngeal",
+     "Oral / oropharyngeal",
+     "Hypopharyngeal"
+    ],
+    "correct_pairs": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      2
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      3,
+      0
+     ]
+    ],
+    "explanation": "Slide 11: nasopharyngeal — nasal obstruction, snoring, otitis media, neck mass, epistaxis, headache. Oral/oropharyngeal — halitosis, taste disturbance, sore throat, dysphagia, odynophagia, trismus, otalgia, neck mass, muffled voice, airway obstruction. Hypopharyngeal — sore throat, dysphagia, odynophagia, neck mass, otalgia, globus sensation, airway obstruction."
+   },
+   {
+    "type": "mcq",
+    "title": "Adenoids — the natural history",
+    "_covers": [
+     13
+    ],
+    "stem": "The deck gives the life cycle of adenoid tissue. Which sequence is correct?",
+    "image": "assets/tutorials/throat/p13.webp",
+    "options": {
+     "A": "Absent at birth, grows from age 6, persists for life",
+     "B": "Present at birth, physiological enlargement up to age 6, atrophies at puberty, almost completely gone by 20",
+     "C": "Present at birth, peaks at puberty, gone by 30",
+     "D": "Appears at age 2, gone by age 10"
+    },
+    "answer": "B",
+    "explanation": "Slide 13: adenoid tissue is present at birth, shows physiological enlargement up to the age of 6, then tends to atrophy at puberty and almost completely disappears by the age of 20. It sits at the junction of the roof and posterior wall of the nasopharynx."
+   },
+   {
+    "type": "jeopardy",
+    "title": "Tonsil complications & tumours — Jeopardy",
+    "_covers": [
+     26,
+     29,
+     30
+    ],
+    "categories": [
+     "Complications",
+     "Tumours"
+    ],
+    "rows": [
+     {
+      "value": "100",
+      "cells": [
+       {
+        "clue": "Which organism causes the rheumatic fever that follows tonsillitis?",
+        "options": {
+         "A": "Group A beta-haemolytic Streptococcus",
+         "B": "Staphylococcus aureus",
+         "C": "H. influenzae",
+         "D": "Streptococcus viridans"
+        },
+        "answer": "A",
+        "explanation": "Slide 26: rheumatic fever is often seen with tonsillitis due to Group A beta-haemolytic Streptococci."
+       },
+       {
+        "clue": "The commonest malignant tonsillar tumour and its appearance.",
+        "options": {
+         "A": "Lymphoma, smooth enlargement",
+         "B": "Squamous cell carcinoma, an ulcerated lesion with a necrotic base",
+         "C": "Adenocarcinoma, polypoid",
+         "D": "Melanoma, pigmented"
+        },
+        "answer": "B",
+        "explanation": "Slide 30: squamous cell carcinoma is the most common and presents as an ulcerated lesion with a necrotic base."
+       }
+      ]
+     },
+     {
+      "value": "200",
+      "cells": [
+       {
+        "clue": "A patient with valvular heart disease gets acute tonsillitis. Which complication, and which organism?",
+        "options": {
+         "A": "Acute glomerulonephritis, Group A strep",
+         "B": "Subacute bacterial endocarditis, Streptococcus viridans",
+         "C": "Rheumatic fever, Staph aureus",
+         "D": "Parapharyngeal abscess, anaerobes"
+        },
+        "answer": "B",
+        "explanation": "Slide 26: acute tonsillitis in a patient with valvular heart disease may be complicated by subacute bacterial endocarditis, usually due to Streptococcus viridans."
+       },
+       {
+        "clue": "Which tumour may present as UNILATERAL tonsillar enlargement mimicking an indolent quinsy?",
+        "options": {
+         "A": "Papilloma",
+         "B": "Squamous cell carcinoma",
+         "C": "Lymphoma",
+         "D": "Haemangioma"
+        },
+        "answer": "C",
+        "explanation": "Slide 30: lymphomas may present as unilateral tonsillar enlargement and may simulate an indolent peritonsillar abscess."
+       }
+      ]
+     },
+     {
+      "value": "300",
+      "cells": [
+       {
+        "clue": "Which tonsillitis complication does the deck describe as 'rare these days'?",
+        "options": {
+         "A": "Peritonsillar abscess",
+         "B": "Acute glomerulonephritis",
+         "C": "Chronic tonsillitis",
+         "D": "Parapharyngeal abscess"
+        },
+        "answer": "B",
+        "explanation": "Slide 26: the complications are chronic tonsillitis, peritonsillar abscess, parapharyngeal abscess, rheumatic fever, acute glomerulonephritis (rare these days) and subacute bacterial endocarditis."
+       },
+       {
+        "clue": "A pharyngeal papilloma is usually asymptomatic. When does it cause trouble, and what is the treatment?",
+        "options": {
+         "A": "Only when infected; antibiotics",
+         "B": "When large, local throat irritation; surgical excision",
+         "C": "Only in children; observation",
+         "D": "When bleeding; cautery"
+        },
+        "answer": "B",
+        "explanation": "Slide 29: often asymptomatic and found accidentally; when large it causes local irritation in the throat. Treatment is surgical excision."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "type": "guesswhat",
+    "title": "Guess what — the omega epiglottis",
+    "_covers": [
+     34
+    ],
+    "image": "assets/tutorials/throat/p34.webp",
+    "prompt": "Direct laryngoscopy shows an elongated, omega-shaped epiglottis with floppy aryepiglottic folds and prominent arytenoids. Which condition, and which instrument does the deck call very useful for the diagnosis?",
+    "options": {
+     "A": "Laryngeal web; rigid bronchoscope",
+     "B": "Laryngomalacia; the flexible laryngoscope",
+     "C": "Vocal cord polyp; stroboscopy",
+     "D": "Croup; lateral neck X-ray"
+    },
+    "answer": "B",
+    "explanation": "Slide 34: in laryngomalacia direct laryngoscopy shows an elongated omega-shaped epiglottis, floppy aryepiglottic folds and prominent arytenoids. The flexible laryngoscope is very useful to make the diagnosis."
+   },
+   {
+    "type": "scenario",
+    "title": "Case — weak cry from birth",
+    "_covers": [
+     35
+    ],
+    "stem": "A newborn has had airway obstruction and a weak cry — almost aphonia — dating from birth. Endoscopy shows a membrane across the larynx from incomplete recanalisation.",
+    "image": "assets/tutorials/throat/p35.webp",
+    "question": "According to the deck, what decides the treatment?",
+    "options": {
+     "A": "The child's age",
+     "B": "The THICKNESS of the web",
+     "C": "The oxygen saturation",
+     "D": "Whether there is a family history"
+    },
+    "answer": "B",
+    "explanation": "Slide 35: treatment depends on the thickness of the web. Thin webs can be cut with a knife or CO2 laser; thick ones may require excision via laryngofissure with placement of a silicon keel and subsequent dilatations."
+   },
+   {
+    "type": "matching",
+    "title": "Laryngitis — acute or chronic?",
+    "_covers": [
+     36
+    ],
+    "left": [
+     "Smoking, LPR, voice abuse, chronic lung disease",
+     "Infectious (commoner) or vocal abuse",
+     "Dull red rounded cords with flecks of viscid mucus",
+     "Voice rest, analgesia, antibiotics, steam inhalation"
+    ],
+    "right": [
+     "Acute laryngitis — causes",
+     "Chronic laryngitis — causes",
+     "Acute laryngitis — treatment",
+     "Chronic laryngitis — examination"
+    ],
+    "correct_pairs": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      3,
+      2
+     ]
+    ],
+    "explanation": "Slide 36: ACUTE — infectious (more common) or non-infectious vocal abuse; hoarseness, sore throat, dry cough; treat with voice rest, analgesia, antibiotics, steam. CHRONIC — smoking, LPR, voice abuse, chronic lung disease; hoarseness with constant throat clearing; cords dull red and rounded with flecks of viscid mucus in the interarytenoid region; treat the chest infection, avoid irritants, steam, voice rest."
+   },
+   {
+    "type": "order",
+    "title": "Cancer larynx — the four management options",
+    "_covers": [
+     42
+    ],
+    "prompt": "The deck numbers four management options. Put them in the deck's order.",
+    "items": [
+     "Radiotherapy",
+     "Surgery — endoscopic CO2 laser resection, conservation laryngeal surgery, or total laryngectomy",
+     "Combined therapy — surgery with pre- or postoperative radiotherapy",
+     "Chemoradiotherapy (organ preservation)"
+    ],
+    "correct_order": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "explanation": "Slide 42: 1. radiotherapy; 2. surgery (endoscopic resection with CO2 laser, conservation laryngeal surgery, total laryngectomy); 3. combined therapy — surgery with pre- or postoperative radiotherapy; 4. chemoradiotherapy for organ preservation."
+   },
+   {
+    "type": "pickmistake",
+    "title": "Pick the mistake — tracheostomy care",
+    "_covers": [
+     53
+    ],
+    "scenario": "A nurse lists the problems to watch for during tracheostomy care. One line does not belong to this slide.",
+    "lines": [
+     "Dislocation of the tracheostomy tube",
+     "Bleeding from the stoma or during suction",
+     "Blockage of the tracheostomy tube",
+     "Aspiration and swallowing problems",
+     "Speaking problems",
+     "Tracheo-innominate fistula"
+    ],
+    "answer": "6",
+    "explanation": "Slide 53 lists five problems during tracheostomy CARE: dislocation, bleeding, blockage, aspiration/swallowing and speaking problems. Tracheo-innominate fistula is on slide 52 as a LATE COMPLICATION, not a day-to-day care problem."
+   },
+   {
+    "type": "truefalse",
+    "title": "True or false — the papilloma",
+    "_covers": [
+     29
+    ],
+    "statement": "A pharyngeal papilloma is often asymptomatic and discovered accidentally, and the treatment is surgical excision.",
+    "answer": true,
+    "explanation": "Slide 29: often asymptomatic, may be discovered accidentally by the patient or physician; when large it causes local throat irritation. Treatment is surgical excision."
    }
   ]
  },
@@ -2675,6 +2948,306 @@ window.ORL_TUTORIALS = [
     ],
     "answer_sentence": "unilateral serous otitis media in an adult suggests nasopharyngeal growth",
     "explanation": "Slide 63: the presence of unilateral serous otitis media in an adult should raise suspicion of a nasopharyngeal growth."
+   },
+   {
+    "type": "matching",
+    "title": "Vascular anatomy — which supply, which direction?",
+    "_covers": [
+     4,
+     14
+    ],
+    "left": [
+     "Superiorly",
+     "Anteriorly & inferiorly",
+     "Internal carotid branches",
+     "External carotid branches"
+    ],
+    "right": [
+     "Greater palatine, sphenopalatine and superior labial",
+     "Anterior and posterior ethmoid arteries",
+     "Anterior and posterior ethmoid",
+     "Greater palatine, sphenopalatine, superior labial"
+    ],
+    "correct_pairs": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      3,
+      3
+     ]
+    ],
+    "explanation": "Slides 4 and 14: the nose is supplied superiorly by the anterior and posterior ethmoid arteries (internal carotid system) and anteriorly/inferiorly by the greater palatine, sphenopalatine and superior labial (external carotid system). Both carotid systems anastomose here — one reason the nose bleeds so heavily."
+   },
+   {
+    "type": "jeopardy",
+    "title": "General causes of epistaxis — Jeopardy",
+    "_covers": [
+     18
+    ],
+    "categories": [
+     "Systemic",
+     "Drugs"
+    ],
+    "rows": [
+     {
+      "value": "100",
+      "cells": [
+       {
+        "clue": "The deck calls this an AGGRAVATING factor rather than a cause on its own.",
+        "options": {
+         "A": "Hypertension",
+         "B": "Cirrhosis",
+         "C": "Typhoid",
+         "D": "Nephritis"
+        },
+        "answer": "A",
+        "explanation": "Slide 18: hypertension is listed as an aggravating factor."
+       },
+       {
+        "clue": "This drug causes epistaxis as a platelet function inhibitor.",
+        "options": {
+         "A": "Warfarin",
+         "B": "Heparin",
+         "C": "Aspirin",
+         "D": "Cocaine"
+        },
+        "answer": "C",
+        "explanation": "Slide 18: aspirin — platelet function inhibitor. Warfarin and heparin are anticoagulants."
+       }
+      ]
+     },
+     {
+      "value": "200",
+      "cells": [
+       {
+        "clue": "Which TWO cardiac conditions does the deck name?",
+        "options": {
+         "A": "CHF and mitral stenosis",
+         "B": "Aortic stenosis and AF",
+         "C": "Endocarditis and myocarditis",
+         "D": "Cor pulmonale and VSD"
+        },
+        "answer": "A",
+        "explanation": "Slide 18: cardiac causes are CHF and mitral stenosis."
+       },
+       {
+        "clue": "The three-step mechanism by which cocaine causes bleeding.",
+        "options": {
+         "A": "Vasodilation then thrombosis then ulceration",
+         "B": "Ischaemia then rebound hyperaemia then mucosal necrosis",
+         "C": "Infection then granuloma then perforation",
+         "D": "Oedema then polyp then obstruction"
+        },
+        "answer": "B",
+        "explanation": "Slide 18: cocaine — ischaemia, then rebound hyperaemia, then mucosal necrosis."
+       }
+      ]
+     },
+     {
+      "value": "300",
+      "cells": [
+       {
+        "clue": "Which vitamin deficiencies are listed among the coagulopathies?",
+        "options": {
+         "A": "Vitamin A and D",
+         "B": "Vitamin B12 and folate",
+         "C": "Vitamin C and K",
+         "D": "Vitamin E only"
+        },
+        "answer": "C",
+        "explanation": "Slide 18: coagulopathies include haemophilia, factor deficiencies, ITP, and vitamin C & K deficiencies, plus severe liver disease, anaemias, purpura and leukaemias."
+       },
+       {
+        "clue": "Which unusual systemic cause of epistaxis appears on the list?",
+        "options": {
+         "A": "Endometriosis",
+         "B": "Psoriasis",
+         "C": "Gout",
+         "D": "Coeliac disease"
+        },
+        "answer": "A",
+        "explanation": "Slide 18: the list includes malignancies, endometriosis, nephritis and typhoid."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "type": "mcq",
+    "title": "Cauterisation — what do you use?",
+    "_covers": [
+     25
+    ],
+    "stem": "The deck gives two methods of cauterising a bleeding point. Which chemicals does it name?",
+    "image": "assets/tutorials/nose/p25.webp",
+    "options": {
+     "A": "Silver nitrate stick or chromic acid bead",
+     "B": "Trichloroacetic acid or phenol",
+     "C": "Formalin or iodine",
+     "D": "Adrenaline paste only"
+    },
+    "answer": "A",
+    "explanation": "Slide 25: (1) chemicals — silver nitrate stick or chromic acid bead; (2) electrical. Afterwards apply ointment and advise against nose blowing and nose picking."
+   },
+   {
+    "type": "order",
+    "title": "Posterior packing — the full package",
+    "_covers": [
+     28
+    ],
+    "prompt": "Posterior bleeding needs more than a pack. Order the steps the deck lists.",
+    "items": [
+     "Confirm the bleed is posterior",
+     "General anaesthesia",
+     "Insert a Foley's catheter or other inflatable device",
+     "Cover with antibiotics and transfuse as needed",
+     "Check blood gases in children",
+     "Remove the pack as soon as possible"
+    ],
+    "correct_order": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "explanation": "Slide 28: posterior packing if the bleed is posterior, under GA, using a Foley's or other inflatable device, with antibiotics, transfusion and blood gases in children — and removed as soon as possible."
+   },
+   {
+    "type": "guesswho",
+    "title": "Guess the treatment — when packing fails",
+    "_covers": [
+     31
+    ],
+    "clues": [
+     "The deck lists it under 'OTHER TREATMENTS', after cautery and packing",
+     "It includes ligation of the maxillary, ethmoid and external carotid arteries",
+     "Another option on the same slide is embolization",
+     "A further option is 2% lignocaine with adrenaline injected into a named foramen"
+    ],
+    "options": {
+     "A": "The greater palatine foramen",
+     "B": "The incisive foramen",
+     "C": "The foramen rotundum",
+     "D": "The cribriform plate"
+    },
+    "answer": "A",
+    "explanation": "Slide 31: other treatments are vessel ligation (maxillary, ethmoid, external carotid), embolization, catheters with iced water lavage, and 2% lignocaine with adrenaline injected into the GREATER PALATINE foramen."
+   },
+   {
+    "type": "matching",
+    "title": "Rhinitis — classify it",
+    "_covers": [
+     65
+    ],
+    "left": [
+     "Acute non-specific",
+     "Acute specific",
+     "Chronic non-specific",
+     "Chronic specific"
+    ],
+    "right": [
+     "Rhinoscleroma, syphilis, TB",
+     "Coryza / common cold",
+     "Diphtheria",
+     "Hypertrophic / atrophic"
+    ],
+    "correct_pairs": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      2
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      3,
+      0
+     ]
+    ],
+    "explanation": "Slide 65: acute non-specific = coryza/common cold; acute specific = diphtheria; chronic non-specific = hypertrophic/atrophic; chronic specific = rhinoscleroma, syphilis, TB."
+   },
+   {
+    "type": "mcq",
+    "title": "Nasopharyngeal cancer — the pathology split",
+    "_covers": [
+     61
+    ],
+    "stem": "According to the deck, what proportion of nasopharyngeal cancers are squamous cell carcinoma (including transitional cell carcinoma and lymphoepithelioma), and what proportion are lymphomas?",
+    "options": {
+     "A": "50% SCC, 40% lymphoma",
+     "B": "85% SCC, 10% lymphoma",
+     "C": "95% SCC, 2% lymphoma",
+     "D": "70% SCC, 25% lymphoma"
+    },
+    "answer": "B",
+    "explanation": "Slide 61: squamous cell carcinoma in its various grades and variants is the most common at 85%; lymphomas constitute 10%."
+   },
+   {
+    "type": "truefalse",
+    "title": "True or false — EBV and diet",
+    "_covers": [
+     61
+    ],
+    "statement": "The deck lists genetic susceptibility (higher in Chinese patients), Epstein-Barr virus, and environmental factors including nitrosamines from dry salted fish as the responsible factors in nasopharyngeal cancer.",
+    "answer": true,
+    "explanation": "Slide 61: the three factor groups are genetic (Chinese have higher susceptibility), viral (EBV closely associated), and environmental (air pollution, tobacco and opium smoking, nitrosamines from dry salted fish, smoke from incense and wood)."
+   },
+   {
+    "type": "millionaire",
+    "title": "Millionaire — treatment of choice",
+    "prize": "Nasopharynx round",
+    "_covers": [
+     64
+    ],
+    "stem": "What does the deck name as the treatment of choice for nasopharyngeal cancer, and what does adding chemotherapy do in stage III-IV disease?",
+    "options": {
+     "A": "Surgery; chemotherapy adds nothing",
+     "B": "Radiotherapy; adding chemotherapy DOUBLES the cure rate",
+     "C": "Chemotherapy alone; radiotherapy is palliative",
+     "D": "Surgery with postoperative chemotherapy"
+    },
+    "answer": "B",
+    "explanation": "Slide 64: radiotherapy is the treatment of choice. Some stage III and IV cancers can be cured by radiotherapy alone, but the cure rate is DOUBLED when chemotherapy is combined with it."
+   },
+   {
+    "type": "order",
+    "title": "Nasopharyngeal cancer — the work-up",
+    "_covers": [
+     64
+    ],
+    "prompt": "Order the diagnostic work-up as the deck lists it.",
+    "items": [
+     "Endoscopic evaluation",
+     "CT scan / MRI of nasopharynx and neck",
+     "CT or ultrasound abdomen for liver secondaries",
+     "PET scan",
+     "Biopsy under local or general anaesthesia using endoscopes"
+    ],
+    "correct_order": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "explanation": "Slide 64: endoscopic evaluation, imaging (CT/MRI nasopharynx and neck), CT or ultrasound abdomen for liver secondaries, PET scan, then biopsy. Note that cervical nodal metastasis may be the ONLY manifestation, and distant metastases may already be present at diagnosis."
    }
   ]
  }
